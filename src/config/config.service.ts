@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 
@@ -10,12 +10,11 @@ export class ConfigService {
 
   constructor() {
     const { parsed } = dotenv.config();
-    console.log('parsed', parsed);
     this.envConfig = parsed;
   }
 
   get(key: string): string {
-    return process.env[key];
+    return process.env[key] || this.envConfig[key];
   }
 
   getDatabaseConfig(): TypeOrmModuleOptions {
