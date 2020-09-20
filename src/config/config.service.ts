@@ -15,13 +15,15 @@ export class ConfigService {
   }
 
   get(key: string): string {
+    console.log('ENV', this.envConfig);
     return this.envConfig[key];
   }
 
   getDatabaseConfig(): TypeOrmModuleOptions {
+
     return {
       type: 'postgres',
-      host: this.get('DB_HOST'),
+      host: process.env.DB_HOST,
       port: Number(this.get('DB_PORT')),
       username: this.get('DB_USERNAME'),
       password: this.get('DB_PASSWORD'),
