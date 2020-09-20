@@ -1,5 +1,7 @@
-import { Logger } from '@nestjs/common';
+import * as dotenv from 'dotenv'
+dotenv.config()
 
+import { Logger } from '@nestjs/common';
 import { ApplicationContext } from './app.context';
 
 declare const module: any;
