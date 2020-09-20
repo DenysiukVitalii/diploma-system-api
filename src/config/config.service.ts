@@ -1,23 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-import * as path from 'path';
 
 import { EnvConfig } from './interfaces';
 
 @Injectable()
 export class ConfigService {
   private readonly envConfig: EnvConfig;
-  private readonly filePath: string = '.env';
 
   constructor() {
-    const envFile = path.resolve(__dirname, '../../', this.filePath);
-    this.envConfig = dotenv.parse(fs.readFileSync(envFile));
+    const { parsed } = dotenv.config();
+    this.envConfig = parsed;
   }
 
   get(key: string): string {
-    return this.envConfig[key];
+    return process.env[key] || this.envConfig[key];
   }
 
   getDatabaseConfig(): TypeOrmModuleOptions {
