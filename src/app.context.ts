@@ -2,11 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 
 let app;
 export const ApplicationContext = async () => {
   if (!app) {
     app = await NestFactory.create(AppModule);
+    app.useGlobalFilters(new HttpExceptionFilter());
 
     const options = new DocumentBuilder()
       .setTitle('Diploma API')
