@@ -10,20 +10,19 @@ export class ConfigService {
 
   constructor() {
     const { parsed } = dotenv.config();
-    Logger.log(parsed);
+    console.log('parsed', parsed);
     this.envConfig = parsed;
   }
 
   get(key: string): string {
-    console.log('ENV', this.envConfig);
-    return this.envConfig[key];
+    return process.env[key];
   }
 
   getDatabaseConfig(): TypeOrmModuleOptions {
 
     return {
       type: 'postgres',
-      host: process.env.DB_HOST,
+      host: this.get('DB_HOST'),
       port: Number(this.get('DB_PORT')),
       username: this.get('DB_USERNAME'),
       password: this.get('DB_PASSWORD'),
