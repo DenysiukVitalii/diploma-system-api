@@ -18,7 +18,6 @@ export class ConfigService {
   }
 
   getDatabaseConfig(): TypeOrmModuleOptions {
-
     return {
       type: 'postgres',
       host: this.get('DB_HOST'),
