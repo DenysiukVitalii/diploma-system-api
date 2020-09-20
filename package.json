@@ -24,9 +24,13 @@
     "@nestjs/core": "^7.4.4",
     "@nestjs/platform-express": "^7.4.4",
     "@nestjs/swagger": "^4.6.0",
+    "@nestjs/typeorm": "^7.1.4",
+    "dotenv": "^8.2.0",
+    "pg": "^8.3.3",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.2",
     "swagger-ui-express": "^4.1.4",
+    "typeorm": "^0.2.26",
     "typescript": "^3.0.1"
   },
   "devDependencies": {
