@@ -17,10 +17,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof MessageCodeError) {
       return response.status(exception.httpStatus).send(exception);
     } else {
-      Logger.log('exception');
       Logger.log(exception);
-
-      return response.status(exception.status).send(exception);
+      return response.status(exception.status).send(exception.response);
     }
   }
 }
