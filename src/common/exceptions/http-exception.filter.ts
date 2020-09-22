@@ -17,11 +17,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof MessageCodeError) {
       return response.status(exception.httpStatus).send(exception);
     } else {
+      Logger.log('exception');
       Logger.log(exception);
-      response.status(HttpStatus.BAD_REQUEST).json({
-        timestamp: new Date().toISOString(),
-        path: request.url,
-      });
+
+      return response.status(exception.status).send(exception);
     }
   }
 }

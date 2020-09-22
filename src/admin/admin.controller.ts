@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { AdminDto } from './dto/admin.login.dto';
+import { AdminLoginDto } from './dto/admin.login.dto';
 import { AuthService } from '../auth/auth.service';
 
 @Controller('admin')
@@ -9,7 +9,7 @@ export class AdminController {
   ) {}
 
   @Post('login')
-  async login(@Body() adminLoginDto: AdminDto): Promise<object> {
-    return await this.authService.login(adminLoginDto);
+  async login(@Body() adminLoginDto: AdminLoginDto): Promise<object> {
+    return await this.authService.loginAdmin(adminLoginDto);
   }
 }

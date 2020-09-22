@@ -10,7 +10,7 @@ export class AdminService {
     private readonly adminRepository: Repository<Admin>,
   ) {}
 
-  findOne(username: string): Promise<Admin> {
+  findAdmin(username: string): Promise<Admin> {
     return this.adminRepository.findOne({ username });
   }
 }

@@ -1,4 +1,4 @@
-export class AdminDto {
+export class AdminLoginDto {
   username: string;
   password: string;
 }
