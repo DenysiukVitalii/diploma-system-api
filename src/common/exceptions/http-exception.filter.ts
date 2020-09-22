@@ -3,7 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  HttpStatus, Logger,
+  Logger,
 } from '@nestjs/common';
 import { MessageCodeError } from './message-code-error';
 
