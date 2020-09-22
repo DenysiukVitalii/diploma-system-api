@@ -3,7 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { MessageCodeError } from './message-code-error';
 
@@ -17,10 +17,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof MessageCodeError) {
       return response.status(exception.httpStatus).send(exception);
     } else {
-      response.status(HttpStatus.BAD_REQUEST).json({
-        timestamp: new Date().toISOString(),
-        path: request.url,
-      });
+      Logger.log(exception);
+      return response.status(exception.status).send(exception.response);
     }
   }
 }
