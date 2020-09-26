@@ -36,6 +36,13 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
+  async findAllUsersHeads(): Promise<User[]> {
+    return this.usersRepository.find({
+      where: { role: Roles.HEAD_OF_DEPARTMENT },
+      relations: ['department'],
+    });
+  }
+
   async createHead(createHeadDto: CreateHeadDto): Promise<User> {
     const department = await this.departmentRepository.findOne(createHeadDto.departmentId);
 
