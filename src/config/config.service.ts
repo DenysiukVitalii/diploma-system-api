@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
+import { MailerOptions, HandlebarsAdapter } from '@nest-modules/mailer';
+import { join } from 'path';
 
 import { EnvConfig } from './interfaces';
 
 @Injectable()
 export class ConfigService {
   private readonly envConfig: EnvConfig;
+  static readonly ROOT_PATH: string = process.cwd();
 
   constructor() {
     const { parsed } = dotenv.config();
@@ -31,5 +34,35 @@ export class ConfigService {
         rejectUnauthorized: false,
       },
     };
+  }
+
+  getMailerConfiguration(): MailerOptions {
+    const mailerConfig = {
+      transport: {
+        host: this.get('MAILER_SMTP_HOST'),
+        port: Number(this.get('MAILER_SMTP_PORT')),
+      },
+      defaults: {
+        from: this.get('MAILER_SMTP_EMAIL_FROM'),
+      },
+      template: {
+        dir: join(
+          ConfigService.ROOT_PATH,
+          this.get('MAILER_SMTP_TEMPLATES_PATH'),
+        ),
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    };
+    if (this.get('MAILER_SMTP_USER') && this.get('MAILER_SMTP_PASSWORD')) {
+      mailerConfig.transport['auth'] = {
+        user: this.get('MAILER_SMTP_USER'),
+        pass: this.get('MAILER_SMTP_PASSWORD'),
+      };
+    }
+
+    return mailerConfig;
   }
 }
