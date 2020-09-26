@@ -9,10 +9,12 @@ import { AuthModule } from './modules/auth/auth.module';
 import { DepartmentModule } from './modules/department/department.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { MailerModule } from '@nest-modules/mailer';
 
 @Module({
   imports: [
     ConfigModule,
+    MailerModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) =>
