@@ -7,6 +7,11 @@ import { UsersModule } from './modules/users/users.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DepartmentModule } from './modules/department/department.module';
+import { AcademicDegreeModule } from './modules/academicDegree/academicDegree.module';
+import { AcademicYearModule } from './modules/academicYear/academicYear.module';
+import { DegreeModule } from './modules/degree/degree.module';
+import { LaboratoryModule } from './modules/laboratory/laboratory.module';
+import { LaboratoryDirectionModule } from './modules/laboratoryDirection/laboratoryDirection.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { MailerModule } from '@nest-modules/mailer';
@@ -25,6 +30,11 @@ import { MailerModule } from '@nest-modules/mailer';
     AdminModule,
     AuthModule,
     DepartmentModule,
+    AcademicDegreeModule,
+    AcademicYearModule,
+    DegreeModule,
+    LaboratoryModule,
+    LaboratoryDirectionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
