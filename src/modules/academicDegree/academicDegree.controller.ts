@@ -4,7 +4,7 @@ import { AcademicDegreeService } from './academicDegree.service';
 import { AcademicDegree } from './academicDegree.entity';
 import { AcademicDegreeDto } from './dto/academicDegree.dto';
 
-@Controller('academicDegree')
+@Controller('academic-degree')
 export class AcademicDegreeController {
   constructor(private readonly academicDegreeService: AcademicDegreeService) {}
 
@@ -30,5 +30,4 @@ export class AcademicDegreeController {
   public delete(@Param('id') id: number) {
     return this.academicDegreeService.delete(id);
   }
-
 }

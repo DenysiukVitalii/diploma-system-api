@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -27,7 +27,7 @@ export class LaboratoryService implements LaboratoryServiceInterface {
     const laboratory = await this.laboratoryRepository.findOne({ where: { id } });
 
     if (!laboratory) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException();
     }
 
     return this.laboratoryRepository.save({ ...laboratory, ...data });
@@ -37,10 +37,9 @@ export class LaboratoryService implements LaboratoryServiceInterface {
     const laboratory = await this.laboratoryRepository.findOne({ where: { id } });
 
     if (!laboratory) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException();
     }
 
     return this.laboratoryRepository.remove(laboratory);
   }
-
 }

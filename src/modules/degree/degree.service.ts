@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -27,7 +27,7 @@ export class DegreeService implements DegreeServiceInterface {
     const degree = await this.degreeRepository.findOne({ where: { id } });
 
     if (!degree) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException();
     }
 
     return this.degreeRepository.save({ ...degree, ...data });
@@ -37,10 +37,9 @@ export class DegreeService implements DegreeServiceInterface {
     const degree = await this.degreeRepository.findOne({ where: { id } });
 
     if (!degree) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException();
     }
 
     return this.degreeRepository.remove(degree);
   }
-
 }

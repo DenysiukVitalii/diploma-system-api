@@ -1,7 +1,4 @@
-import {
-  Entity, PrimaryGeneratedColumn,
-  Column, ManyToOne,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Department } from 'modules/department/department.entity';
 
 @Entity('academicYear')

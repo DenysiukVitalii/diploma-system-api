@@ -27,5 +27,4 @@ export class DegreeController {
   public delete(@Param('id') id: number) {
     return this.degreeService.delete(id);
   }
-
 }

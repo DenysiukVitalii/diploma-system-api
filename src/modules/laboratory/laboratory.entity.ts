@@ -1,7 +1,4 @@
-import {
-  Entity, PrimaryGeneratedColumn,
-  Column, ManyToOne, OneToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Department } from 'modules/department/department.entity';
 import { LaboratoryDirection } from 'modules/laboratoryDirection/laboratoryDirection.entity';
 
@@ -20,5 +17,4 @@ export class Laboratory {
 
   @OneToMany(type => LaboratoryDirection, laboratoryDirection => laboratoryDirection.laboratory)
   laboratoryDirections: LaboratoryDirection[];
-
 }

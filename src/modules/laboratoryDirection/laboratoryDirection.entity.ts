@@ -1,7 +1,4 @@
-import {
-  Entity, PrimaryGeneratedColumn,
-  Column, ManyToOne,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Laboratory } from 'modules/laboratory/laboratory.entity';
 
 @Entity('laboratoryDirection')

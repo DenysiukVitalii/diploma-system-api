@@ -4,7 +4,7 @@ import { LaboratoryDirectionService } from './laboratoryDirection.service';
 import { LaboratoryDirection } from './laboratoryDirection.entity';
 import { LaboratoryDirectionDto } from './dto/laboratoryDirection.dto';
 
-@Controller('laboratoryDirection')
+@Controller('laboratory-direction')
 export class LaboratoryDirectionController {
   constructor(private readonly laboratoryDirectionService: LaboratoryDirectionService) {}
 
@@ -30,5 +30,4 @@ export class LaboratoryDirectionController {
   public delete(@Param('id') id: number) {
     return this.laboratoryDirectionService.delete(id);
   }
-
 }

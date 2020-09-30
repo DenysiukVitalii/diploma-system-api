@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -27,7 +27,7 @@ export class AcademicYearService implements AcademicYearServiceInterface {
     const academicYear = await this.academicYearRepository.findOne({ where: { id } });
 
     if (!academicYear) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException();
     }
 
     return this.academicYearRepository.save({ ...academicYear, ...data });
@@ -37,10 +37,9 @@ export class AcademicYearService implements AcademicYearServiceInterface {
     const academicYear = await this.academicYearRepository.findOne({ where: { id } });
 
     if (!academicYear) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException();
     }
 
     return this.academicYearRepository.remove(academicYear);
   }
-
 }

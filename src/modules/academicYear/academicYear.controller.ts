@@ -4,7 +4,7 @@ import { AcademicYearService } from './academicYear.service';
 import { AcademicYear } from './academicYear.entity';
 import { AcademicYearDto } from './dto/academicYear.dto';
 
-@Controller('academicYear')
+@Controller('academic-year')
 export class AcademicYearController {
   constructor(private readonly academicYearService: AcademicYearService) {}
 
@@ -30,5 +30,4 @@ export class AcademicYearController {
   public delete(@Param('id') id: number) {
     return this.academicYearService.delete(id);
   }
-
 }

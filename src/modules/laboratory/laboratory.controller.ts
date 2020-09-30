@@ -30,5 +30,4 @@ export class LaboratoryController {
   public async delete(@Param('id') id: number) {
     return this.laboratoryService.delete(id);
   }
-
 }
