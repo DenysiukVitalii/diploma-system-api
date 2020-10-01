@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailerModule } from '@nest-modules/mailer';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -14,7 +15,7 @@ import { LaboratoryModule } from './modules/laboratory/laboratory.module';
 import { LaboratoryDirectionModule } from './modules/laboratoryDirection/laboratoryDirection.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
-import { MailerModule } from '@nest-modules/mailer';
+import { GroupModule } from 'modules/group/group.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { MailerModule } from '@nest-modules/mailer';
     AdminModule,
     AuthModule,
     DepartmentModule,
+    GroupModule,
     AcademicDegreeModule,
     AcademicYearModule,
     DegreeModule,
