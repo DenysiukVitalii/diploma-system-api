@@ -51,7 +51,7 @@ export class UsersService {
 
   async findAllUsersHeads(): Promise<User[]> {
     return this.usersRepository.find({
-      where: { role: Roles.HEAD_OF_DEPARTMENT },
+      where: { role: Roles.TEACHER, isHead: true },
       relations: ['department'],
     });
   }
@@ -65,7 +65,8 @@ export class UsersService {
 
     const head = await this.usersRepository.create({
       ...createHeadDto,
-      role: Roles.HEAD_OF_DEPARTMENT,
+      role: Roles.TEACHER,
+      isHead: true,
       department,
     });
 
