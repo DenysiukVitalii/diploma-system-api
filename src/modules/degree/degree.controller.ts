@@ -1,9 +1,14 @@
 import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
 
+import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { DegreeService } from './degree.service';
 import { Degree } from './degree.entity';
 import { DegreeDto } from './dto/degree.dto';
+import { Roles } from '../users/enums/roles.enum';
+import { User } from '../users/user.entity';
+import { Auth } from '../users/decorators/auth.decorator';
 
+@Auth(Roles.PERSONAL)
 @Controller('degree')
 export class DegreeController {
   constructor(private readonly degreeService: DegreeService) {}
@@ -14,8 +19,8 @@ export class DegreeController {
   }
 
   @Post()
-  public create(@Body() degreeDto: DegreeDto) {
-    return this.degreeService.create(degreeDto);
+  public create(@Body() degreeDto: DegreeDto, @CurrentUser() user: User): Promise<Degree> {
+    return this.degreeService.create(degreeDto, user);
   }
 
   @Put(':id')
@@ -27,5 +32,4 @@ export class DegreeController {
   public delete(@Param('id') id: number) {
     return this.degreeService.delete(id);
   }
-
 }
