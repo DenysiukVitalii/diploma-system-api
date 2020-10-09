@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { paginateRepository, Pagination } from '../../common/paginate';
 import { Department } from './department.entity';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 
@@ -12,8 +13,9 @@ export class DepartmentService {
     private readonly departmentRepository: Repository<Department>,
   ) {}
 
-  async findAll(): Promise<Department[]> {
-    return this.departmentRepository.find();
+  async findAll(query): Promise<Pagination<Department>> {
+    const { perPage = 10, page = 1 } = query;
+    return paginateRepository(this.departmentRepository, { perPage, page });
   }
 
   async findById(id: number): Promise<Department> {
