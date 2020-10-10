@@ -11,6 +11,11 @@ export const ApplicationContext = async () => {
     app = await NestFactory.create(AppModule);
     app.useGlobalFilters(new HttpExceptionFilter());
     app.useGlobalPipes(new ValidationPipe());
+    app.enableCors({
+      credentials: true,
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      origin: ['http://localhost:4000'],
+    });
 
     const options = new DocumentBuilder()
       .setTitle('Diploma API')

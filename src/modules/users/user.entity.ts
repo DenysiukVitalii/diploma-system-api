@@ -38,8 +38,14 @@ export class User {
   @Column({ default: false })
   isActive: boolean;
 
+  @Column({ default: false })
+  isHead: boolean;
+
   @Column({ nullable: true })
   lastLogin: string;
+
+  @Column({ nullable: true })
+  departmentId: number;
 
   @ManyToOne(type => Department, department => department.users)
   department: Department;
