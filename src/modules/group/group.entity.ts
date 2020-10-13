@@ -14,6 +14,15 @@ export class Group {
   @Column()
   amountStudents: number;
 
+  @Column({ nullable: true })
+  departmentId: number;
+
+  @Column({ nullable: true })
+  academicYearId: number;
+
+  @Column({ nullable: true })
+  academicDegreeId: number;
+
   @ManyToOne(type => Department, department => department.groups)
   department: Department;
 

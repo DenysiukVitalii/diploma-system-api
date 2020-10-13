@@ -1,5 +1,4 @@
 import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
-import { Department } from 'modules/department/department.entity';
 
 export class CreateGroupDto {
   @IsString()
@@ -9,10 +8,6 @@ export class CreateGroupDto {
   @IsNumber()
   @IsNotEmpty()
   readonly amountStudents: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  readonly departmentId: Department;
 
   @IsNumber()
   @IsNotEmpty()

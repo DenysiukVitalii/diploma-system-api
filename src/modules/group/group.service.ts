@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Group } from './group.entity';
 import { CreateGroupDto } from './dto/create-group.dto';
+import { User } from 'modules/users/user.entity';
 
 @Injectable()
 export class GroupService {
@@ -26,11 +27,18 @@ export class GroupService {
     return group;
   }
 
-  async create(data: CreateGroupDto): Promise<Group> {
-    const group = await this.groupRepository.create(data);
+  async create(data: CreateGroupDto, user: User): Promise<Group> {
+    const { departmentId } = user;
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
+    const group = await this.groupRepository.create({
+      ...data,
+      department: { id: departmentId },
+    });
 
     await this.groupRepository.save(group);
-
     return group;
   }
 
