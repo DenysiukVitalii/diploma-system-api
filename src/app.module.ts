@@ -16,6 +16,7 @@ import { LaboratoryDirectionModule } from './modules/laboratoryDirection/laborat
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { GroupModule } from 'modules/group/group.module';
+import { TeacherLoadModule } from 'modules/teacherLoad/teacherLoad.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { GroupModule } from 'modules/group/group.module';
     DegreeModule,
     LaboratoryModule,
     LaboratoryDirectionModule,
+    TeacherLoadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -31,7 +31,6 @@ export class UsersService {
     user.lastName = createUserDto.lastName;
     user.email = createUserDto.email;
     user.middleName = createUserDto.middleName;
-    user.role = createUserDto.role;
 
     return this.usersRepository.save(user);
   }
@@ -59,34 +58,50 @@ export class UsersService {
     });
   }
 
-  async createHead(createHeadDto: CreateHeadDto): Promise<User> {
-    const department = await this.departmentRepository.findOne(createHeadDto.departmentId);
+  async createUser(createUserDto: CreateUserDto, role: Roles): Promise<User> {
+    const department = await this.departmentRepository.findOne(createUserDto.departmentId);
 
     if (!department) {
       throw new NotFoundException('Department not found');
     }
 
-    const head = await this.usersRepository.create({
-      ...createHeadDto,
-      role: Roles.TEACHER,
-      isHead: true,
+    const user = await this.usersRepository.create({
+      ...createUserDto,
+      role,
+      isHead: createUserDto.isHead,
       department,
     });
 
-    await this.usersRepository.save(head);
+    await this.usersRepository.save(user);
 
-    const token = sign({ email: head.email, verify: true }, jwtConstants.secret);
+    const token = sign({ email: user.email, verify: true }, jwtConstants.secret);
 
     await this.mailerService.sendMail(
-      head.email,
+      user.email,
       MessageType.NewUser,
       {
-        role: head.role,
+        role: user.role,
         verifyLink: `https://diploma-system-app.herokuapp.com/verify/?token=${token}`,
       },
     );
 
-    return head;
+    return user;
+  }
+
+  createHead(createUserDto: CreateUserDto): Promise<User> {
+   return this.createUser(createUserDto, Roles.HEAD_OF_DEPARTMENT);
+  }
+
+  createPersonal(createUserDto: CreateUserDto): Promise<User> {
+    return this.createUser(createUserDto, Roles.PERSONAL);
+  }
+
+  createTeacher(createUserDto: CreateUserDto): Promise<User> {
+    return this.createUser(createUserDto, Roles.TEACHER);
+  }
+
+  createStudent(createUserDto: CreateUserDto): Promise<User> {
+    return this.createUser(createUserDto, Roles.STUDENT);
   }
 
   async verifyToken(verifyTokenDto: VerifyTokenDto): Promise<VerifyTokenInterface> {
