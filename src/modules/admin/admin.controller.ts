@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AdminLoginDto } from './dto/admin.login.dto';
 import { AuthService } from '../auth/auth.service';
-import { CreateHeadDto } from './dto/create.head.dto';
 import { UsersService } from 'modules/users/users.service';
+import { CreateUserDto } from 'modules/users/dto/create-user.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -22,7 +22,7 @@ export class AdminController {
   }
 
   @Post('create/head')
-  createHead(@Body() createHeadDto: CreateHeadDto): Promise<object> {
+  createHead(@Body() createHeadDto: CreateUserDto): Promise<object> {
     return this.usersService.createHead(createHeadDto);
   }
 }

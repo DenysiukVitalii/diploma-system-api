@@ -4,6 +4,7 @@ export class CreateUserDto {
   firstName: string;
   lastName: string;
   middleName: string;
-  role: Roles;
   email: string;
+  isHead?: boolean = false;
+  departmentId: number;
 }

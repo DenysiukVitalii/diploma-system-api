@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne, ManyToMany, OneToMany } from 'typeorm';
 import { Department } from 'modules/department/department.entity';
 import { Roles } from './enums/roles.enum';
+import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
 
 @Entity()
 export class User {
@@ -49,4 +50,7 @@ export class User {
 
   @ManyToOne(type => Department, department => department.users)
   department: Department;
+
+  @OneToMany(type => TeacherLoad, teacherLoad => teacherLoad.user)
+  teacherLoad: TeacherLoad[];
 }
