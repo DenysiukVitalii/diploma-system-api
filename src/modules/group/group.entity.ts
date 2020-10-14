@@ -3,7 +3,7 @@ import { AcademicDegree } from 'modules/academicDegree/academicDegree.entity';
 import { AcademicYear } from 'modules/academicYear/academicYear.entity';
 import { Department } from 'modules/department/department.entity';
 
-@Entity()
+@Entity('group')
 export class Group {
   @PrimaryGeneratedColumn()
   id: number;

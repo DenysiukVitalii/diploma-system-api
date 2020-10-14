@@ -11,6 +11,9 @@ export class LaboratoryDirection {
   })
   name: string;
 
+  @Column({ nullable: true })
+  laboratoryId: number;
+
   @ManyToOne(type => Laboratory, laboratory => laboratory.laboratoryDirections)
   laboratory: Laboratory;
 }

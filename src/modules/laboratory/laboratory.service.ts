@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Laboratory } from './laboratory.entity';
 import { LaboratoryInterface, LaboratoryServiceInterface } from './interfaces';
 import { LaboratoryDto } from './dto/laboratory.dto';
+import { User } from 'modules/users/user.entity';
 
 @Injectable()
 export class LaboratoryService implements LaboratoryServiceInterface {
@@ -17,8 +18,17 @@ export class LaboratoryService implements LaboratoryServiceInterface {
     return this.laboratoryRepository.find();
   }
 
-  async create(data: LaboratoryInterface): Promise<Laboratory> {
-    const laboratory = await this.laboratoryRepository.create(data);
+  async create(data: LaboratoryInterface, user: User): Promise<Laboratory> {
+    const { departmentId } = user;
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
+    const laboratory = await this.laboratoryRepository.create({
+      ...data,
+      department: { id: departmentId },
+    });
+
     await this.laboratoryRepository.save(laboratory);
     return laboratory;
   }
