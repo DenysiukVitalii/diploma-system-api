@@ -1,5 +1,4 @@
 export enum Roles {
-  'HEAD_OF_DEPARTMENT' = 'HEAD_OF_DEPARTMENT',
   'PERSONAL' = 'PERSONAL',
   'TEACHER' = 'TEACHER',
   'STUDENT' = 'STUDENT',
