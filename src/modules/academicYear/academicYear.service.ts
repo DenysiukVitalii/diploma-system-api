@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { AcademicYear } from './academicYear.entity';
 import { AcademicYearInterface, AcademicYearServiceInterface } from './interfaces';
 import { AcademicYearDto } from './dto/academicYear.dto';
+import { User } from 'modules/users/user.entity';
 
 @Injectable()
 export class AcademicYearService implements AcademicYearServiceInterface {
@@ -17,8 +18,17 @@ export class AcademicYearService implements AcademicYearServiceInterface {
     return this.academicYearRepository.find();
   }
 
-  async create(data: AcademicYearInterface): Promise<AcademicYear> {
-    const academicYear = await this.academicYearRepository.create(data);
+  async create(data: AcademicYearInterface, user: User): Promise<AcademicYear> {
+    const { departmentId } = user;
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
+    const academicYear = await this.academicYearRepository.create({
+      ...data,
+      department: { id: departmentId },
+    });
+
     await this.academicYearRepository.save(academicYear);
     return academicYear;
   }

@@ -3,7 +3,12 @@ import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common'
 import { AcademicYearService } from './academicYear.service';
 import { AcademicYear } from './academicYear.entity';
 import { AcademicYearDto } from './dto/academicYear.dto';
+import { CurrentUser } from 'modules/users/decorators/current-user.decorator';
+import { User } from 'modules/users/user.entity';
+import { Auth } from 'modules/users/decorators/auth.decorator';
+import { Roles } from 'modules/users/enums/roles.enum';
 
+@Auth(Roles.PERSONAL)
 @Controller('academic-year')
 export class AcademicYearController {
   constructor(private readonly academicYearService: AcademicYearService) {}
@@ -14,8 +19,8 @@ export class AcademicYearController {
   }
 
   @Post()
-  public create(@Body() academicYearDto: AcademicYearDto) {
-    return this.academicYearService.create(academicYearDto);
+  public create(@Body() academicYearDto: AcademicYearDto, @CurrentUser() user: User) {
+    return this.academicYearService.create(academicYearDto, user);
   }
 
   @Put(':id')

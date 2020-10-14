@@ -3,7 +3,10 @@ import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common'
 import { LaboratoryDirectionService } from './laboratoryDirection.service';
 import { LaboratoryDirection } from './laboratoryDirection.entity';
 import { LaboratoryDirectionDto } from './dto/laboratoryDirection.dto';
+import { Roles } from 'modules/users/enums/roles.enum';
+import { Auth } from 'modules/users/decorators/auth.decorator';
 
+@Auth(Roles.PERSONAL)
 @Controller('laboratory-direction')
 export class LaboratoryDirectionController {
   constructor(private readonly laboratoryDirectionService: LaboratoryDirectionService) {}

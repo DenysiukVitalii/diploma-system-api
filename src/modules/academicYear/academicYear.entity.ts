@@ -12,6 +12,9 @@ export class AcademicYear {
   })
   name: string;
 
+  @Column({ nullable: true })
+  departmentId: number;
+
   @ManyToOne(type => Department, department => department.academicYears)
   department: Department;
 

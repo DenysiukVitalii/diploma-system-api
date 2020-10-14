@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { AcademicDegree } from './academicDegree.entity';
 import { AcademicDegreeInterface, AcademicDegreeServiceInterface } from './interfaces';
 import { AcademicDegreeDto } from './dto/academicDegree.dto';
+import { User } from 'modules/users/user.entity';
 
 @Injectable()
 export class AcademicDegreeService implements AcademicDegreeServiceInterface {
@@ -17,8 +18,17 @@ export class AcademicDegreeService implements AcademicDegreeServiceInterface {
     return this.academicDegreeRepository.find();
   }
 
-  async create(data: AcademicDegreeInterface): Promise<AcademicDegree> {
-    const academicDegree = await this.academicDegreeRepository.create(data);
+  async create(data: AcademicDegreeInterface, user: User): Promise<AcademicDegree> {
+    const { departmentId } = user;
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
+    const academicDegree = await this.academicDegreeRepository.create({
+      ...data,
+      department: { id: departmentId },
+    });
+
     await this.academicDegreeRepository.save(academicDegree);
     return academicDegree;
   }

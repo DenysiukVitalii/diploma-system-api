@@ -6,5 +6,4 @@ export class CreateUserDto {
   middleName: string;
   role: Roles;
   email: string;
-  departmentId: number;
 }

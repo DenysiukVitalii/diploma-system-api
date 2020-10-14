@@ -18,7 +18,10 @@ export class LaboratoryDirectionService implements LaboratoryDirectionServiceInt
   }
 
   async create(data: LaboratoryDirectionInterface): Promise<LaboratoryDirection> {
-    const laboratoryDirection = await this.laboratoryDirectionRepository.create(data);
+    const laboratoryDirection = await this.laboratoryDirectionRepository.create({
+      ...data,
+      laboratory: { id: data.laboratoryId },
+    });
     await this.laboratoryDirectionRepository.save(laboratoryDirection);
     return laboratoryDirection;
   }
