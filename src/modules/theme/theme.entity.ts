@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AcademicDegree } from 'modules/academicDegree/academicDegree.entity';
 import { AcademicYear } from 'modules/academicYear/academicYear.entity';
 import { Department } from 'modules/department/department.entity';
+import { Request } from 'modules/request/request.entity';
 
 @Entity('theme')
 export class Theme {
@@ -37,4 +38,7 @@ export class Theme {
 
   @ManyToOne(type => AcademicDegree, academicDegree => academicDegree.themes)
   academicDegree: AcademicDegree;
+
+  @OneToMany(type => Request, request => request.theme)
+  requests: Request[];
 }
