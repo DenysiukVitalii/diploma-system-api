@@ -33,6 +33,6 @@ export class TeacherLoad {
   @ManyToOne(type => Department, department => department.degrees)
   department: Department;
 
-  @ManyToOne(type => User, user => user.teacherLoads)
+  @ManyToOne(type => User, user => user.teacherLoad)
   user: User;
 }
