@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Get, Post, Put, Delete, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Get, Post, Put, Delete, UseGuards } from '@nestjs/common';
 
 import { JwtAdminAuthGuard } from '../auth/guards/jwt-admin-auth.guard';
 import { CreateDepartmentDto } from './dto/create-department.dto';
@@ -12,8 +12,8 @@ export class DepartmentController {
   ) {}
 
   @Get()
-  public async getAll(@Query() query: object) {
-    return this.departmentService.findAll(query);
+  public async getAll() {
+    return this.departmentService.findAll();
   }
 
   @Get(':id')

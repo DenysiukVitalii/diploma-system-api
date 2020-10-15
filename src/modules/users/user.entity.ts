@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToOne, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Department } from 'modules/department/department.entity';
 import { Roles } from './enums/roles.enum';
 import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
@@ -27,7 +27,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
   password?: string;
 
   @Column({ unique: true, nullable: true })

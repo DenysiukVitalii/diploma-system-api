@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { sign, verify } from 'jsonwebtoken';
 import { hash } from 'bcrypt';
 
+import { Pagination, paginateRepository } from '../../common/paginate';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { CreateHeadDto } from '../admin/dto/create.head.dto';
@@ -47,30 +48,29 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email }});
   }
 
+  findByEmailWithPassword(email: string): Promise<User> {
+    return this.usersRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
   async remove(id: string): Promise<void> {
     await this.usersRepository.delete(id);
   }
 
-  async findAllUsersHeads(): Promise<User[]> {
-    return this.usersRepository.find({
+  async findAllUsersHeads(query): Promise<Pagination<User>> {
+    const { perPage = 10, page = 1 } = query;
+    return paginateRepository(this.usersRepository, { perPage, page }, {
       where: { role: Roles.TEACHER, isHead: true },
+      order: { id: 'DESC' },
       relations: ['department'],
     });
   }
 
-  async createUser(createUserDto: CreateUserDto, role: Roles): Promise<User> {
-    const department = await this.departmentRepository.findOne(createUserDto.departmentId);
-
-    if (!department) {
-      throw new NotFoundException('Department not found');
-    }
-
-    const user = await this.usersRepository.create({
-      ...createUserDto,
-      role,
-      isHead: createUserDto.isHead,
-      department,
-    });
+  async createUser(userData: object): Promise<User> {
+    const user = await this.usersRepository.create(userData);
 
     await this.usersRepository.save(user);
 
@@ -88,22 +88,75 @@ export class UsersService {
     return user;
   }
 
-  createHead(createUserDto: CreateUserDto): Promise<User> {
-   return this.createUser(createUserDto, Roles.HEAD_OF_DEPARTMENT);
+  async createHead(createHeadDto: CreateHeadDto): Promise<User> {
+    const department = await this.departmentRepository.findOne(createHeadDto.departmentId);
+
+    if (!department) {
+      throw new NotFoundException('Department not found');
+    }
+
+    const head = {
+      ...createHeadDto,
+      role: Roles.TEACHER,
+      isHead: true,
+      department,
+    };
+    return this.createUser(head);
   }
 
+  async updateHead(id: number, data: CreateHeadDto): Promise<User> {
+    const head = await this.usersRepository.findOne({
+      where: { id, role: Roles.TEACHER, isHead: true },
+      relations: ['department'],
+    });
+
+    if (!head) {
+      throw new NotFoundException();
+    }
+
+    return this.usersRepository.save({ ...head, ...data });
+  }
+
+  async deleteHead(id: number) {
+    const head = await this.usersRepository.findOne({
+      where: { id, role: Roles.TEACHER, isHead: true },
+    });
+
+    if (!head) {
+      throw new NotFoundException();
+    }
+
+    return this.usersRepository.remove(head);
+  }
+
+  // todo get department from user
   createPersonal(createUserDto: CreateUserDto): Promise<User> {
-    return this.createUser(createUserDto, Roles.PERSONAL);
+    const personal = {
+      ...createUserDto,
+      role: Roles.PERSONAL,
+    };
+    return this.createUser(personal);
   }
 
+  // todo get department from user and add in request another data
   createTeacher(createUserDto: CreateUserDto): Promise<User> {
-    return this.createUser(createUserDto, Roles.TEACHER);
+    const teacher = {
+      ...createUserDto,
+      role: Roles.TEACHER,
+    };
+    return this.createUser(teacher);
   }
 
+  // todo get department from user and add in request another data
   createStudent(createUserDto: CreateUserDto): Promise<User> {
-    return this.createUser(createUserDto, Roles.STUDENT);
+    const student = {
+      ...createUserDto,
+      role: Roles.STUDENT,
+    };
+    return this.createUser(student);
   }
 
+  // todo move jwtConstants.secret to env
   async verifyToken(verifyTokenDto: VerifyTokenDto): Promise<VerifyTokenInterface> {
     // @ts-ignore
     const { email } = verify(verifyTokenDto.token, jwtConstants.secret);
@@ -116,6 +169,7 @@ export class UsersService {
     return { verified: user.isActive, email };
   }
 
+  // todo get user with password
   async signUp(data: object) {
     // @ts-ignore
     const { email, password } = data;
