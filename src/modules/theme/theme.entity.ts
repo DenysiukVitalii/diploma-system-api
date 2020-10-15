@@ -11,8 +11,8 @@ export class Theme {
   @Column()
   name: string;
 
-  @Column()
-  status: string;
+  @Column({ default: false })
+  isConfirmed: boolean;
 
   @Column({ nullable: true })
   studentId: number;
