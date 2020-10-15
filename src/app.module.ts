@@ -18,6 +18,7 @@ import { ConfigService } from './config/config.service';
 import { GroupModule } from 'modules/group/group.module';
 import { ThemeModule } from 'modules/theme/theme.module';
 import { TeacherLoadModule } from 'modules/teacherLoad/teacherLoad.module';
+import { RequestModule } from 'modules/request/request.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { TeacherLoadModule } from 'modules/teacherLoad/teacherLoad.module';
     LaboratoryDirectionModule,
     TeacherLoadModule,
     ThemeModule,
+    RequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],
