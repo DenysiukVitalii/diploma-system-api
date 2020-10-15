@@ -5,6 +5,7 @@ import { AcademicDegree } from 'modules/academicDegree/academicDegree.entity';
 import { AcademicYear } from 'modules/academicYear/academicYear.entity';
 import { Laboratory } from 'modules/laboratory/laboratory.entity';
 import { Group } from 'modules/group/group.entity';
+import { Theme } from 'modules/theme/theme.entity';
 
 @Entity()
 export class Department {
@@ -31,4 +32,7 @@ export class Department {
 
   @OneToMany(type => Group, group => group.department)
   groups: Group[];
+
+  @OneToMany(type => Theme, theme => theme.department)
+  themes: Theme[];
 }

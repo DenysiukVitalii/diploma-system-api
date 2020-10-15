@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'ty
 import { Department } from 'modules/department/department.entity';
 import { Group } from 'modules/group/group.entity';
 import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
+import { Theme } from 'modules/theme/theme.entity';
 
 @Entity('academicDegree')
 export class AcademicDegree {
@@ -24,4 +25,7 @@ export class AcademicDegree {
 
   @OneToMany(type => TeacherLoad, teacherLoad => teacherLoad.academicYear)
   teacherLoads: TeacherLoad[];
+
+  @OneToMany(type => Theme, theme => theme.academicDegree)
+  themes: Theme[];
 }
