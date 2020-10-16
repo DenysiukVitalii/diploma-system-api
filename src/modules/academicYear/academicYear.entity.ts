@@ -3,6 +3,7 @@ import { Department } from 'modules/department/department.entity';
 import { Group } from 'modules/group/group.entity';
 import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
 import { Theme } from 'modules/theme/theme.entity';
+import { Schedule } from 'modules/schedule/schedule.entity';
 
 @Entity('academicYear')
 export class AcademicYear {
@@ -28,4 +29,7 @@ export class AcademicYear {
 
   @OneToMany(type => Theme, theme => theme.academicYear)
   themes: Theme[];
+
+  @OneToMany(type => Schedule, schedule => schedule.academicYear)
+  schedules: Schedule[];
 }

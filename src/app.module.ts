@@ -19,6 +19,7 @@ import { GroupModule } from 'modules/group/group.module';
 import { ThemeModule } from 'modules/theme/theme.module';
 import { TeacherLoadModule } from 'modules/teacherLoad/teacherLoad.module';
 import { RequestModule } from 'modules/request/request.module';
+import { ScheduleModule } from 'modules/schedule/schedule.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { RequestModule } from 'modules/request/request.module';
     TeacherLoadModule,
     ThemeModule,
     RequestModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
