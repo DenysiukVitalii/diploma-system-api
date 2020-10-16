@@ -2,6 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'ty
 import { Department } from 'modules/department/department.entity';
 import { Roles } from './enums/roles.enum';
 import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
+import { Group } from '../group/group.entity';
+import { Degree } from '../degree/degree.entity';
 
 @Entity()
 export class User {
@@ -48,8 +50,20 @@ export class User {
   @Column({ nullable: true })
   departmentId: number;
 
+  @Column({ nullable: true })
+  groupId: number;
+
+  @Column({ nullable: true })
+  degreeId: number;
+
   @ManyToOne(type => Department, department => department.users)
   department: Department;
+
+  @ManyToOne(type => Group, group => group.users)
+  group: Group;
+
+  @ManyToOne(type => Degree, degree => degree.users)
+  degree: Degree;
 
   @OneToMany(type => TeacherLoad, teacherLoad => teacherLoad.user)
   teacherLoad: TeacherLoad[];

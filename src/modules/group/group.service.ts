@@ -14,11 +14,16 @@ export class GroupService {
   ) {}
 
   async findAll(): Promise<Group[]> {
-    return this.groupRepository.find();
+    return this.groupRepository.find({
+      relations: ['academicDegree', 'academicYear'],
+    });
   }
 
   async findById(id: number): Promise<Group> {
-    const group = await this.groupRepository.findOne(id);
+    const group = await this.groupRepository.findOne(id, {
+      order: { id: 'DESC' },
+      relations: ['academicDegree', 'academicYear'],
+    });
 
     if (!group) {
       throw new NotFoundException();
@@ -39,7 +44,7 @@ export class GroupService {
     });
 
     await this.groupRepository.save(group);
-    return group;
+    return this.findById(group.id);
   }
 
   async update(id: number, data: CreateGroupDto): Promise<Group> {
@@ -49,7 +54,8 @@ export class GroupService {
       throw new NotFoundException();
     }
 
-    return await this.groupRepository.save({ ...group, ...data });
+    await this.groupRepository.save({ ...group, ...data });
+    return this.findById(group.id);
   }
 
   async delete(id: number) {

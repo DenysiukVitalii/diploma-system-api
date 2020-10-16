@@ -10,11 +10,15 @@ import { User } from './user.entity';
 import { CreateHeadDto } from '../admin/dto/create.head.dto';
 import { Roles } from './enums/roles.enum';
 import { Department } from '../department/department.entity';
+import { Group } from '../group/group.entity';
+import { Degree } from '../degree/degree.entity';
 import { ApplicationMailerService } from '../mailer/mailer.service';
 import { MessageType } from '../mailer/constants/mailer.constants';
 import { jwtConstants } from '../auth/constants';
 import { VerifyTokenDto } from '../auth/dto/verify.token.dto';
 import { VerifyTokenInterface } from '../auth/interfaces/verify-token.interface';
+import { CreateStudentDto } from './dto/create-student.dto';
+import { CreateTeacherDto } from './dto/create-teacher.dto';
 
 @Injectable()
 export class UsersService {
@@ -23,6 +27,10 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Department)
     private readonly departmentRepository: Repository<Department>,
+    @InjectRepository(Group)
+    private readonly groupRepository: Repository<Group>,
+    @InjectRepository(Degree)
+    private readonly degreeRepository: Repository<Degree>,
     private readonly mailerService: ApplicationMailerService,
   ) {}
 
@@ -66,6 +74,24 @@ export class UsersService {
       where: { role: Roles.TEACHER, isHead: true },
       order: { id: 'DESC' },
       relations: ['department'],
+    });
+  }
+
+  async findAllUsersStudents(query): Promise<Pagination<User>> {
+    const { perPage = 10, page = 1 } = query;
+    return paginateRepository(this.usersRepository, { perPage, page }, {
+      where: { role: Roles.STUDENT },
+      order: { id: 'DESC' },
+      relations: ['group'],
+    });
+  }
+
+  async findAllUsersTeachers(query): Promise<Pagination<User>> {
+    const { perPage = 10, page = 1 } = query;
+    return paginateRepository(this.usersRepository, { perPage, page }, {
+      where: { role: Roles.TEACHER },
+      order: { id: 'DESC' },
+      relations: ['degree'],
     });
   }
 
@@ -138,22 +164,96 @@ export class UsersService {
     return this.createUser(personal);
   }
 
-  // todo get department from user and add in request another data
-  createTeacher(createUserDto: CreateUserDto): Promise<User> {
+  async createTeacher(createTeacherDto: CreateTeacherDto, departmentId: number): Promise<User> {
+    const degree = await this.degreeRepository.findOne(createTeacherDto.degreeId);
+
+    if (!degree) {
+      throw new NotFoundException('Degree not found');
+    }
+
     const teacher = {
-      ...createUserDto,
+      ...createTeacherDto,
       role: Roles.TEACHER,
+      department: { id: departmentId },
+      degree,
     };
     return this.createUser(teacher);
   }
 
-  // todo get department from user and add in request another data
-  createStudent(createUserDto: CreateUserDto): Promise<User> {
+  async updateTeacher(id: number, data: CreateTeacherDto): Promise<User> {
+    const teacher = await this.usersRepository.findOne({
+      where: { id, role: Roles.TEACHER },
+    });
+
+    if (!teacher) {
+      throw new NotFoundException();
+    }
+
+    const degree = await this.degreeRepository.findOne(data.degreeId);
+
+    if (!degree) {
+      throw new NotFoundException('Degree not found');
+    }
+
+    return this.usersRepository.save({ ...teacher, ...data, degree });
+  }
+
+  async deleteTeacher(id: number) {
+    const teacher = await this.usersRepository.findOne({
+      where: { id, role: Roles.TEACHER },
+    });
+
+    if (!teacher) {
+      throw new NotFoundException();
+    }
+
+    return this.usersRepository.remove(teacher);
+  }
+
+  async createStudent(createStudentDto: CreateStudentDto, departmentId: number): Promise<User> {
+    const group = await this.groupRepository.findOne(createStudentDto.groupId);
+
+    if (!group) {
+      throw new NotFoundException('Group not found');
+    }
+
     const student = {
-      ...createUserDto,
+      ...createStudentDto,
       role: Roles.STUDENT,
+      department: { id: departmentId },
+      group,
     };
     return this.createUser(student);
+  }
+
+  async updateStudent(id: number, data: CreateStudentDto): Promise<User> {
+    const student = await this.usersRepository.findOne({
+      where: { id, role: Roles.STUDENT },
+    });
+
+    if (!student) {
+      throw new NotFoundException();
+    }
+
+    const group = await this.groupRepository.findOne(data.groupId);
+
+    if (!group) {
+      throw new NotFoundException('Group not found');
+    }
+
+    return this.usersRepository.save({ ...student, ...data, group });
+  }
+
+  async deleteStudent(id: number) {
+    const student = await this.usersRepository.findOne({
+      where: { id, role: Roles.STUDENT },
+    });
+
+    if (!student) {
+      throw new NotFoundException();
+    }
+
+    return this.usersRepository.remove(student);
   }
 
   // todo move jwtConstants.secret to env
@@ -169,11 +269,10 @@ export class UsersService {
     return { verified: user.isActive, email };
   }
 
-  // todo get user with password
   async signUp(data: object) {
     // @ts-ignore
     const { email, password } = data;
-    const user = await this.findByEmail(email);
+    const user = await this.findByEmailWithPassword(email);
 
     if (!user) {
       throw new NotFoundException();

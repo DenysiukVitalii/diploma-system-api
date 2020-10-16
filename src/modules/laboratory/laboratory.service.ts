@@ -15,7 +15,11 @@ export class LaboratoryService implements LaboratoryServiceInterface {
   ) {}
 
   findAll(): Promise<Laboratory[]> {
-    return this.laboratoryRepository.find();
+    return this.laboratoryRepository.find({
+      order: {
+        id: 'DESC',
+      },
+    });
   }
 
   async create(data: LaboratoryInterface, user: User): Promise<Laboratory> {

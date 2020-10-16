@@ -15,7 +15,11 @@ export class AcademicDegreeService implements AcademicDegreeServiceInterface {
   ) {}
 
   findAll(): Promise<AcademicDegree[]> {
-    return this.academicDegreeRepository.find();
+    return this.academicDegreeRepository.find({
+      order: {
+        id: 'DESC',
+      },
+    });
   }
 
   async create(data: AcademicDegreeInterface, user: User): Promise<AcademicDegree> {

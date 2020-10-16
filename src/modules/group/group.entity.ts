@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AcademicDegree } from 'modules/academicDegree/academicDegree.entity';
 import { AcademicYear } from 'modules/academicYear/academicYear.entity';
 import { Department } from 'modules/department/department.entity';
+import { User } from '../users/user.entity';
 
 @Entity('group')
 export class Group {
@@ -22,6 +23,9 @@ export class Group {
 
   @Column({ nullable: true })
   academicDegreeId: number;
+
+  @OneToMany(type => User, user => user.group)
+  users: User[];
 
   @ManyToOne(type => Department, department => department.groups)
   department: Department;
