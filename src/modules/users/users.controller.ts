@@ -1,10 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { Auth } from './decorators/auth.decorator';
 import { Roles } from './enums/roles.enum';
 import { IsHeadGuard } from 'modules/auth/guards/isHead.guard';
+import { CreateStudentDto } from './dto/create-student.dto';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { CreateTeacherDto } from './dto/create-teacher.dto';
 
 @Controller('users')
 export class UsersController {
@@ -18,15 +21,57 @@ export class UsersController {
   }
 
   @Auth(Roles.PERSONAL)
-  @Post('create/teacher')
-  createTeacher(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.createTeacher(createUserDto);
+  @Get('teachers')
+  getAllTeachers(@Query() query: object) {
+    return this.usersService.findAllUsersTeachers(query);
   }
 
   @Auth(Roles.PERSONAL)
-  @Post('create/student')
-  createStudent(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.createStudent(createUserDto);
+  @Post('teacher')
+  createTeacher(
+    @Body() createTeacherDto: CreateTeacherDto,
+    @CurrentUser('departmentId') departmentId: number,
+  ): Promise<object> {
+    return this.usersService.createTeacher(createTeacherDto, departmentId);
+  }
+
+  @Auth(Roles.PERSONAL)
+  @Put('teacher/:id')
+  updateTeacher(@Param('id') id: number, @Body() teacherDto: CreateTeacherDto): Promise<object> {
+    return this.usersService.updateTeacher(id, teacherDto);
+  }
+
+  @Auth(Roles.PERSONAL)
+  @Delete('teacher/:id')
+  public async deleteTeacher(@Param('id') id: number) {
+    return this.usersService.deleteTeacher(id);
+  }
+
+  @Auth(Roles.PERSONAL)
+  @Get('students')
+  getAllStudents(@Query() query: object) {
+    return this.usersService.findAllUsersStudents(query);
+  }
+
+  @Auth(Roles.PERSONAL)
+  @Post('student')
+  createStudent(
+    @Body() createStudentDto: CreateStudentDto,
+    @CurrentUser('departmentId') departmentId: number,
+  ): Promise<object> {
+    return this.usersService.createStudent(createStudentDto, departmentId);
+  }
+
+  @Auth(Roles.PERSONAL)
+  @Put('student/:id')
+  updateStudent(@Param('id') id: number, @Body() studentDto: CreateStudentDto): Promise<object> {
+    return this.usersService.updateStudent(id, studentDto);
+  }
+
+  @Auth(Roles.PERSONAL)
+  @Delete('student/:id')
+  public async deleteStudent(@Param('id') id: number) {
+    return this.usersService.deleteStudent(id);
   }
 
   @Get()

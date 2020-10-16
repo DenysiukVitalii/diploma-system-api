@@ -15,7 +15,11 @@ export class AcademicYearService implements AcademicYearServiceInterface {
   ) {}
 
   findAll(): Promise<AcademicYear[]> {
-    return this.academicYearRepository.find();
+    return this.academicYearRepository.find({
+      order: {
+        id: 'DESC',
+      },
+    });
   }
 
   async create(data: AcademicYearInterface, user: User): Promise<AcademicYear> {

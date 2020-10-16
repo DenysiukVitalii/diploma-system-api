@@ -4,8 +4,4 @@ export class AcademicYearDto {
   @IsString()
   @IsNotEmpty()
   readonly name: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  readonly departmentId: number;
 }
