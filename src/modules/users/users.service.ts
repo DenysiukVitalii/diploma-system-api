@@ -68,9 +68,8 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async findAllUsersHeads(query): Promise<Pagination<User>> {
-    const { perPage = 10, page = 1 } = query;
-    return paginateRepository(this.usersRepository, { perPage, page }, {
+  async findAllUsersHeads(): Promise<User[]> {
+    return this.usersRepository.find({
       where: { role: Roles.TEACHER, isHead: true },
       order: { id: 'DESC' },
       relations: ['department'],
@@ -86,9 +85,8 @@ export class UsersService {
     });
   }
 
-  async findAllUsersTeachers(query): Promise<Pagination<User>> {
-    const { perPage = 10, page = 1 } = query;
-    return paginateRepository(this.usersRepository, { perPage, page }, {
+  async findAllUsersTeachers(): Promise<User[]> {
+    return this.usersRepository.find({
       where: { role: Roles.TEACHER },
       order: { id: 'DESC' },
       relations: ['degree'],

@@ -20,8 +20,8 @@ export class AdminController {
 
   @UseGuards(JwtAdminAuthGuard)
   @Get('heads')
-  getAllHeads(@Query() query: object) {
-    return this.usersService.findAllUsersHeads(query);
+  getAllHeads() {
+    return this.usersService.findAllUsersHeads();
   }
 
   @UseGuards(JwtAdminAuthGuard)
