@@ -56,10 +56,6 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email }});
   }
 
-  findCurrentUser(user: User): Promise<User> {
-    return this.usersRepository.findOne(user.id);
-  }
-
   findByEmailWithPassword(email: string): Promise<User> {
     return this.usersRepository
       .createQueryBuilder('user')
