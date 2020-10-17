@@ -79,6 +79,12 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Auth(Roles.PERSONAL, Roles.TEACHER, Roles.STUDENT)
+  @Get('current')
+  getUser(@CurrentUser() user: User): Promise<User> {
+    return this.usersService.findCurrentUser(user);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findOne(id);
