@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { sign, verify } from 'jsonwebtoken';
@@ -19,6 +19,8 @@ import { VerifyTokenDto } from '../auth/dto/verify.token.dto';
 import { VerifyTokenInterface } from '../auth/interfaces/verify-token.interface';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { RecoverPasswordDto } from './dto/recover-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -110,6 +112,46 @@ export class UsersService {
     );
 
     return user;
+  }
+
+  async resetPassword(resetPasswordData: ResetPasswordDto): Promise<User> {
+    const user = await this.findByEmail(resetPasswordData.email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const token = sign({ email: user.email, verify: true }, jwtConstants.secret);
+    Logger.log("RECOVER TOKEN");
+    Logger.log(token);
+
+    await this.mailerService.sendMail(
+      user.email,
+      MessageType.PasswordReset,
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        resetLink: `https://diploma-system-app.herokuapp.com/recover-password/?token=${token}`,
+      },
+    );
+
+    return user;
+  }
+
+  async recoverPassword(recoverPasswordData: RecoverPasswordDto): Promise<User> {
+    // @ts-ignore
+    const { email } = verify(recoverPasswordData.token, jwtConstants.secret);
+    const user = await this.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.password = await hash(recoverPasswordData.password, 10);
+    user.isActive = true;
+
+    return this.usersRepository.save(user);
   }
 
   async createHead(createHeadDto: CreateHeadDto): Promise<User> {
