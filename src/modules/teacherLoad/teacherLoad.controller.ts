@@ -10,7 +10,7 @@ import { Auth } from '../users/decorators/auth.decorator';
 import { TeacherLoadInterface } from './interfaces';
 
 @Auth(Roles.PERSONAL)
-@Controller('teacherLoad')
+@Controller('teacher-load')
 export class TeacherLoadController {
   constructor(private readonly teacherLoadService: TeacherLoadService) {}
 

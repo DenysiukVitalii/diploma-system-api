@@ -22,8 +22,8 @@ export class UsersController {
 
   @Auth(Roles.PERSONAL)
   @Get('teachers')
-  getAllTeachers(@Query() query: object) {
-    return this.usersService.findAllUsersTeachers(query);
+  getAllTeachers() {
+    return this.usersService.findAllUsersTeachers();
   }
 
   @Auth(Roles.PERSONAL)
