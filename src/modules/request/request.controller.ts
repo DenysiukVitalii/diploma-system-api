@@ -14,13 +14,13 @@ export class RequestController {
     private readonly requestService: RequestService,
   ) {}
 
-  @Auth(Roles.TEACHER, Roles.STUDENT)
+  @Auth(Roles.STUDENT)
   @Get()
-  public getAll() {
-    return this.requestService.findAll();
+  public getAll(@CurrentUser() user: User) {
+    return this.requestService.findAll(user);
   }
 
-  @Auth(Roles.TEACHER, Roles.STUDENT)
+  @Auth(Roles.STUDENT)
   @Get()
   public getById(@Param('id') id) {
     return this.requestService.findById(id);
@@ -34,8 +34,8 @@ export class RequestController {
 
   @Auth(Roles.TEACHER)
   @Put(':id')
-  public update(@Param('id') id: number, @Body() requestDto: ActionRequestDto) {
-    return this.requestService.update(id, requestDto);
+  public update(@Param('id') id: number, @Body() requestDto: ActionRequestDto, @CurrentUser() user: User) {
+    return this.requestService.update(id, requestDto, user);
   }
 
   @Auth(Roles.TEACHER, Roles.STUDENT)

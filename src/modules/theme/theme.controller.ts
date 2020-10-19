@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Get, Post, Put, Delete } from '@nestjs/common';
+import { Body, Controller, Param, Get, Post, Put, Delete, Query } from '@nestjs/common';
 
 import { CurrentUser } from 'modules/users/decorators/current-user.decorator';
 import { User } from 'modules/users/user.entity';
@@ -17,6 +17,18 @@ export class ThemeController {
   @Get()
   public getAll() {
     return this.themeService.findAll();
+  }
+
+  @Auth(Roles.TEACHER)
+  @Get('my')
+  getMyThemes(@CurrentUser() user: User): Promise<object> {
+    return this.themeService.getMyThemes(user);
+  }
+
+  @Auth(Roles.STUDENT)
+  @Get('student')
+  getThemesForStudent(@CurrentUser() user: User): Promise<object> {
+    return this.themeService.getThemesForStudent(user);
   }
 
   @Get()
