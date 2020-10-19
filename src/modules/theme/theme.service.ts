@@ -26,7 +26,10 @@ export class ThemeService {
   ) {}
 
   async findAll(): Promise<Theme[]> {
-    return this.themeRepository.find();
+    return this.themeRepository.find({
+      order: { id: 'DESC' },
+      relations: ['laboratoryDirection', 'teacher', 'student', 'academicDegree', 'academicYear'],
+    });
   }
 
   async findById(id: number): Promise<Theme> {
