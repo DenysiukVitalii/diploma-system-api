@@ -4,6 +4,8 @@ import { Roles } from './enums/roles.enum';
 import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
 import { Group } from '../group/group.entity';
 import { Degree } from '../degree/degree.entity';
+import { Theme } from '../theme/theme.entity';
+import { Request } from '../request/request.entity';
 
 @Entity()
 export class User {
@@ -59,7 +61,7 @@ export class User {
   @ManyToOne(type => Department, department => department.users)
   department: Department;
 
-  @ManyToOne(type => Group, group => group.users)
+  @ManyToOne(type => Group, group => group.users, { eager: true })
   group: Group;
 
   @ManyToOne(type => Degree, degree => degree.users)
@@ -67,4 +69,13 @@ export class User {
 
   @OneToMany(type => TeacherLoad, teacherLoad => teacherLoad.user)
   teacherLoad: TeacherLoad[];
+
+  @OneToMany(type => Theme, theme => theme.teacher)
+  themes: Theme[];
+
+  @OneToMany(type => Theme, theme => theme.student)
+  studentThemes: Theme[];
+
+  @OneToMany(type => Request, request => request.student)
+  requests: Request[];
 }
