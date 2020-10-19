@@ -71,6 +71,19 @@ export class ThemeService {
     });
   }
 
+  async deleteStudentFromTheme(id: number) {
+    const theme = await this.themeRepository.findOne(id);
+
+    if (!theme) {
+      throw new NotFoundException();
+    }
+
+    return this.themeRepository.save({
+      ...theme,
+      student: null,
+    });
+  }
+
   async create(data: CreateThemeDto, user: User): Promise<Theme> {
     const { departmentId } = user;
 

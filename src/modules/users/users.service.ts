@@ -78,8 +78,16 @@ export class UsersService {
     });
   }
 
+  async findAllUsersPersonals(): Promise<User[]> {
+    return this.usersRepository.find({
+      where: { role: Roles.PERSONAL },
+      order: { id: 'DESC' },
+      relations: ['department'],
+    });
+  }
+
   async findAllUsersStudents(query): Promise<Pagination<User>> {
-    const { perPage = 10, page = 1 } = query;
+    const { perPage = 1000, page = 1 } = query;
     return paginateRepository(this.usersRepository, { perPage, page }, {
       where: { role: Roles.STUDENT },
       order: { id: 'DESC' },
@@ -195,13 +203,37 @@ export class UsersService {
     return this.usersRepository.remove(head);
   }
 
-  // todo get department from user
-  createPersonal(createUserDto: CreateUserDto): Promise<User> {
+  createPersonal(createUserDto: CreateUserDto, departmentId: number): Promise<User> {
     const personal = {
       ...createUserDto,
       role: Roles.PERSONAL,
+      department: { id: departmentId },
     };
     return this.createUser(personal);
+  }
+
+  async updatePersonal(id: number, data: CreateUserDto): Promise<User> {
+    const personal = await this.usersRepository.findOne({
+      where: { id, role: Roles.PERSONAL },
+    });
+
+    if (!personal) {
+      throw new NotFoundException();
+    }
+
+    return this.usersRepository.save({ ...personal, ...data });
+  }
+
+  async deletePersonal(id: number) {
+    const personal = await this.usersRepository.findOne({
+      where: { id, role: Roles.PERSONAL },
+    });
+
+    if (!personal) {
+      throw new NotFoundException();
+    }
+
+    return this.usersRepository.remove(personal);
   }
 
   async createTeacher(createTeacherDto: CreateTeacherDto, departmentId: number): Promise<User> {

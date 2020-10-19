@@ -38,7 +38,7 @@ export class Theme {
   @ManyToOne(type => Department, department => department.themes)
   department: Department;
 
-  @ManyToOne(type => User, user => user.themes)
+  @ManyToOne(type => User, user => user.themes, { eager: true })
   student: User;
 
   @ManyToOne(type => User, user => user.themes, { eager: true })
