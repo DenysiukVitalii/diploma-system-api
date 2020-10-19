@@ -306,7 +306,7 @@ export class UsersService {
       throw new NotFoundException();
     }
 
-    return { verified: user.isActive, email };
+    return { verified: user.isActive, email, user };
   }
 
   async signUp(data: object) {
