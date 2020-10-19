@@ -31,6 +31,12 @@ export class ThemeController {
     return this.themeService.getThemesForStudent(user);
   }
 
+  @Auth(Roles.TEACHER)
+  @Delete(':themeId/student')
+  public deleteStudentFromTheme(@Param('themeId') themeId: number) {
+    return this.themeService.deleteStudentFromTheme(themeId);
+  }
+
   @Get()
   public getById(@Param('id') id) {
     return this.themeService.findById(id);
