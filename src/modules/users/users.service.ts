@@ -107,7 +107,7 @@ export class UsersService {
       MessageType.NewUser,
       {
         role: user.role,
-        verifyLink: `https://diploma-system-app.herokuapp.com/verify/?token=${token}`,
+        verifyLink: `https://diploma-system-app.herokuapp.com/sign-up/?token=${token}`,
       },
     );
 
