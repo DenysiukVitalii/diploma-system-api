@@ -53,6 +53,15 @@ export class ThemeService {
     });
   }
 
+  async getStudentTheme(user: User): Promise<Theme> {
+    return this.themeRepository.findOneOrFail({
+      where: {
+        studentId: user.id,
+      },
+      relations: ['laboratoryDirection', 'teacher', 'student'],
+    });
+  }
+
   async getThemesForStudent(user: User): Promise<Theme[]> {
     const group = await this.groupRepository.findOne(user.groupId);
 
