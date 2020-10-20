@@ -5,12 +5,18 @@ import { Repository } from 'typeorm';
 import { Schedule } from './schedule.entity';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { User } from 'modules/users/user.entity';
+import { AcademicDegree } from '../academicDegree/academicDegree.entity';
+import { AcademicYear } from '../academicYear/academicYear.entity';
 
 @Injectable()
 export class ScheduleService {
   constructor(
     @InjectRepository(Schedule)
     private readonly scheduleRepository: Repository<Schedule>,
+    @InjectRepository(AcademicDegree)
+    private readonly academicDegreeRepository: Repository<AcademicDegree>,
+    @InjectRepository(AcademicYear)
+    private readonly academicYearRepository: Repository<AcademicYear>,
   ) {}
 
   async findAll(): Promise<Schedule[]> {
@@ -34,17 +40,31 @@ export class ScheduleService {
 
   async create(data: CreateScheduleDto, user: User): Promise<Schedule> {
     const { departmentId } = user;
+
     if (!departmentId) {
       throw new NotFoundException('Department not found');
+    }
+
+    const academicYear = await this.academicYearRepository.findOne(data.academicYearId);
+
+    if (!academicYear) {
+      throw new NotFoundException('Academic year not found');
+    }
+
+    const academicDegree = await this.academicDegreeRepository.findOne(data.academicDegreeId);
+
+    if (!academicDegree) {
+      throw new NotFoundException('Academic degree not found');
     }
 
     const schedule = await this.scheduleRepository.create({
       ...data,
       department: { id: departmentId },
+      academicYear,
+      academicDegree,
     });
 
-    await this.scheduleRepository.save(schedule);
-    return this.findById(schedule.id);
+    return this.scheduleRepository.save(schedule);
   }
 
   async update(id: number, data: CreateScheduleDto): Promise<Schedule> {
@@ -54,8 +74,24 @@ export class ScheduleService {
       throw new NotFoundException();
     }
 
-    await this.scheduleRepository.save({ ...schedule, ...data });
-    return this.findById(schedule.id);
+    const academicYear = await this.academicYearRepository.findOne(data.academicYearId);
+
+    if (!academicYear) {
+      throw new NotFoundException('Academic year not found');
+    }
+
+    const academicDegree = await this.academicDegreeRepository.findOne(data.academicDegreeId);
+
+    if (!academicDegree) {
+      throw new NotFoundException('Academic degree not found');
+    }
+
+    return  this.scheduleRepository.save({
+      ...schedule,
+      ...data,
+      academicYear,
+      academicDegree,
+    });
   }
 
   async delete(id: number) {

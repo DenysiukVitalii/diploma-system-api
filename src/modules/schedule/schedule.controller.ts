@@ -7,33 +7,37 @@ import { User } from 'modules/users/user.entity';
 import { Auth } from 'modules/users/decorators/auth.decorator';
 import { Roles } from 'modules/users/enums/roles.enum';
 
-@Auth(Roles.PERSONAL)
 @Controller('schedule')
 export class ScheduleController {
   constructor(
     private readonly scheduleService: ScheduleService,
   ) {}
 
+  @Auth(Roles.PERSONAL, Roles.STUDENT, Roles.TEACHER)
   @Get()
   public getAll() {
     return this.scheduleService.findAll();
   }
 
+  @Auth(Roles.PERSONAL)
   @Get()
   public getById(@Param('id') id) {
     return this.scheduleService.findById(id);
   }
 
+  @Auth(Roles.PERSONAL)
   @Post()
   create(@Body() createScheduleDto: CreateScheduleDto, @CurrentUser() user: User): Promise<object> {
     return this.scheduleService.create(createScheduleDto, user);
   }
 
+  @Auth(Roles.PERSONAL)
   @Put(':id')
   public update(@Param('id') id: number, @Body() scheduleDto: CreateScheduleDto) {
     return this.scheduleService.update(id, scheduleDto);
   }
 
+  @Auth(Roles.PERSONAL)
   @Delete(':id')
   public delete(@Param('id') id: number) {
     return this.scheduleService.delete(id);
