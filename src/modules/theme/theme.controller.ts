@@ -43,6 +43,12 @@ export class ThemeController {
     return this.themeService.getThemesForStudent(user);
   }
 
+  @Auth(Roles.STUDENT)
+  @Get('student/my')
+  getStudentTheme(@CurrentUser() user: User): Promise<object> {
+    return this.themeService.getStudentTheme(user);
+  }
+
   @Auth(Roles.TEACHER)
   @Delete(':themeId/student')
   public deleteStudentFromTheme(@Param('themeId') themeId: number) {
