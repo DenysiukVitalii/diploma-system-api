@@ -84,6 +84,19 @@ export class ThemeService {
     });
   }
 
+  async setConfirmed(id: number, isConfirmed: boolean) {
+    const theme = await this.themeRepository.findOne(id);
+
+    if (!theme) {
+      throw new NotFoundException();
+    }
+
+    return this.themeRepository.save({
+      ...theme,
+      isConfirmed,
+    });
+  }
+
   async create(data: CreateThemeDto, user: User): Promise<Theme> {
     const { departmentId } = user;
 

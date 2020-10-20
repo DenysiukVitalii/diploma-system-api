@@ -20,6 +20,18 @@ export class ThemeController {
   }
 
   @Auth(Roles.TEACHER)
+  @Put(':id/approve')
+  public approve(@Param('id') id: number) {
+    return this.themeService.setConfirmed(id, true);
+  }
+
+  @Auth(Roles.TEACHER)
+  @Put(':id/decline')
+  public decline(@Param('id') id: number) {
+    return this.themeService.setConfirmed(id, false);
+  }
+
+  @Auth(Roles.TEACHER)
   @Get('my')
   getMyThemes(@CurrentUser() user: User): Promise<object> {
     return this.themeService.getMyThemes(user);
