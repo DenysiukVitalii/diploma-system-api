@@ -58,7 +58,6 @@ export class ThemeService {
       where: {
         studentId: user.id,
       },
-      order: { id: 'DESC' },
       relations: ['laboratoryDirection', 'teacher', 'student'],
     });
   }
