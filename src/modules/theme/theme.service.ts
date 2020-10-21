@@ -54,12 +54,18 @@ export class ThemeService {
   }
 
   async getStudentTheme(user: User): Promise<Theme> {
-    return this.themeRepository.findOneOrFail({
+    const studentTheme = await this.themeRepository.findOne({
       where: {
         studentId: user.id,
       },
       relations: ['laboratoryDirection', 'teacher', 'student'],
     });
+
+    if (!studentTheme) {
+      throw new NotFoundException('Student have no theme');
+    }
+
+    return studentTheme;
   }
 
   async getThemesForStudent(user: User): Promise<Theme[]> {
