@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
-import { Department } from 'modules/department/department.entity';
+import { Department } from '../../modules/department/department.entity';
 import { Roles } from './enums/roles.enum';
-import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
+import { TeacherLoad } from '../../modules/teacherLoad/teacherLoad.entity';
 import { Group } from '../group/group.entity';
 import { Degree } from '../degree/degree.entity';
 import { Theme } from '../theme/theme.entity';
