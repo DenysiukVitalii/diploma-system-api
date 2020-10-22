@@ -1,6 +1,6 @@
 import { Laboratory } from '../laboratory.entity';
 import { LaboratoryInterface } from './laboratory.interface';
-import { User } from 'modules/users/user.entity';
+import { User } from '../../users/user.entity';
 
 export interface LaboratoryServiceInterface {
   findAll(): Promise<LaboratoryInterface[]>;

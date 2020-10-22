@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } fro
 
 import { AdminLoginDto } from './dto/admin.login.dto';
 import { AuthService } from '../auth/auth.service';
-import { UsersService } from 'modules/users/users.service';
+import { UsersService } from '../users/users.service';
 import { CreateHeadDto } from './dto/create.head.dto';
 import { JwtAdminAuthGuard } from '../auth/guards/jwt-admin-auth.guard';
 

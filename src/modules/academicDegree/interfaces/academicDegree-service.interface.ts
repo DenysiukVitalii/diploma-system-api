@@ -1,6 +1,6 @@
 import { AcademicDegree } from '../academicDegree.entity';
 import { AcademicDegreeInterface } from './academicDegree.interface';
-import { User } from 'modules/users/user.entity';
+import { User } from '../../users/user.entity';
 
 export interface AcademicDegreeServiceInterface {
   findAll(): Promise<AcademicDegreeInterface[]>;

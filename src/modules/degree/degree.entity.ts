@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { Department } from 'modules/department/department.entity';
+import { Department } from '../department/department.entity';
 import { User } from '../users/user.entity';
 
 @Entity('degree')

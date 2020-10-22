@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Theme } from './theme.entity';
 import { CreateThemeDto } from './dto/create-theme.dto';
-import { User } from 'modules/users/user.entity';
+import { User } from '../users/user.entity';
 import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
 import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.entity';

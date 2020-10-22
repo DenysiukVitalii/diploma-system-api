@@ -4,7 +4,7 @@ import { Admin } from './admin.entity';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 import { AuthModule } from '../auth/auth.module';
-import { UsersModule } from 'modules/users/users.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [

@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { AcademicDegree } from 'modules/academicDegree/academicDegree.entity';
-import { AcademicYear } from 'modules/academicYear/academicYear.entity';
-import { Department } from 'modules/department/department.entity';
+import { AcademicDegree } from '../academicDegree/academicDegree.entity';
+import { AcademicYear } from '../academicYear/academicYear.entity';
+import { Department } from '../department/department.entity';
 
 @Entity('schedule')
 export class Schedule {

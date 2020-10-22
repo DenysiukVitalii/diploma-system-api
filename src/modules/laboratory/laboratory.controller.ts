@@ -3,10 +3,10 @@ import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common'
 import { LaboratoryService } from './laboratory.service';
 import { Laboratory } from './laboratory.entity';
 import { LaboratoryDto } from './dto/laboratory.dto';
-import { CurrentUser } from 'modules/users/decorators/current-user.decorator';
-import { User } from 'modules/users/user.entity';
-import { Auth } from 'modules/users/decorators/auth.decorator';
-import { Roles } from 'modules/users/enums/roles.enum';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { User } from '../users/user.entity';
+import { Auth } from '../users/decorators/auth.decorator';
+import { Roles } from '../users/enums/roles.enum';
 
 @Auth(Roles.PERSONAL)
 @Controller('laboratory')

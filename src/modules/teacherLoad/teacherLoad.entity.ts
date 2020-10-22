@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Department } from 'modules/department/department.entity';
-import { User } from 'modules/users/user.entity';
-import { AcademicYear } from 'modules/academicYear/academicYear.entity';
-import { AcademicDegree } from 'modules/academicDegree/academicDegree.entity';
+import { Department } from '../department/department.entity';
+import { User } from '../users/user.entity';
+import { AcademicYear } from '../academicYear/academicYear.entity';
+import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 
 @Entity('teacherLoad')
 export class TeacherLoad {

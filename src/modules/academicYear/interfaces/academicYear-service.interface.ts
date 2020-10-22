@@ -1,6 +1,6 @@
 import { AcademicYear } from '../academicYear.entity';
 import { AcademicYearInterface } from './academicYear.interface';
-import { User } from 'modules/users/user.entity';
+import { User } from '../../users/user.entity';
 
 export interface AcademicYearServiceInterface {
   findAll(): Promise<AcademicYearInterface[]>;

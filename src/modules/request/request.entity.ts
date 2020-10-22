@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Theme } from 'modules/theme/theme.entity';
+import { Theme } from '../theme/theme.entity';
 import { User } from '../users/user.entity';
 import { Statuses } from './enums/statuses.enum';
 

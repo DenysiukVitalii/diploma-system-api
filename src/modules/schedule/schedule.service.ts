@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Schedule } from './schedule.entity';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
-import { User } from 'modules/users/user.entity';
+import { User } from '../users/user.entity';
 import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
 

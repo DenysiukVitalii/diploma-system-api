@@ -1,8 +1,8 @@
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
-import { AcademicDegree } from 'modules/academicDegree/academicDegree.entity';
-import { AcademicYear } from 'modules/academicYear/academicYear.entity';
-import { Department } from 'modules/department/department.entity';
-import { Request } from 'modules/request/request.entity';
+import { AcademicDegree } from '../academicDegree/academicDegree.entity';
+import { AcademicYear } from '../academicYear/academicYear.entity';
+import { Department } from '../department/department.entity';
+import { Request } from '../request/request.entity';
 import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.entity';
 import { User } from '../users/user.entity';
 

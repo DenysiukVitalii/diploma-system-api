@@ -4,7 +4,6 @@ import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { Auth } from './decorators/auth.decorator';
 import { Roles } from './enums/roles.enum';
-import { IsHeadGuard } from 'modules/auth/guards/isHead.guard';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateTeacherDto } from './dto/create-teacher.dto';

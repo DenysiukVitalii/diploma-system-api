@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { Department } from 'modules/department/department.entity';
-import { LaboratoryDirection } from 'modules/laboratoryDirection/laboratoryDirection.entity';
+import { Department } from '../department/department.entity';
+import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.entity';
 
 @Entity('laboratory')
 export class Laboratory {

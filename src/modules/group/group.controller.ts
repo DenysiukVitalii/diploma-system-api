@@ -2,10 +2,10 @@ import { Body, Controller, Param, Get, Post, Put, Delete, UseGuards } from '@nes
 
 import { CreateGroupDto } from './dto/create-group.dto';
 import { GroupService } from './group.service';
-import { CurrentUser } from 'modules/users/decorators/current-user.decorator';
-import { User } from 'modules/users/user.entity';
-import { Auth } from 'modules/users/decorators/auth.decorator';
-import { Roles } from 'modules/users/enums/roles.enum';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { User } from '../users/user.entity';
+import { Auth } from '../users/decorators/auth.decorator';
+import { Roles } from '../users/enums/roles.enum';
 
 @Auth(Roles.PERSONAL)
 @Controller('group')

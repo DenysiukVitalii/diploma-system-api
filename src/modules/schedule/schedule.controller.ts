@@ -2,10 +2,10 @@ import { Body, Controller, Param, Get, Post, Put, Delete, UseGuards } from '@nes
 
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { ScheduleService } from './schedule.service';
-import { CurrentUser } from 'modules/users/decorators/current-user.decorator';
-import { User } from 'modules/users/user.entity';
-import { Auth } from 'modules/users/decorators/auth.decorator';
-import { Roles } from 'modules/users/enums/roles.enum';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { User } from '../users/user.entity';
+import { Auth } from '../users/decorators/auth.decorator';
+import { Roles } from '../users/enums/roles.enum';
 
 @Controller('schedule')
 export class ScheduleController {

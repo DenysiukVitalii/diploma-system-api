@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Group } from './group.entity';
 import { CreateGroupDto } from './dto/create-group.dto';
-import { User } from 'modules/users/user.entity';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class GroupService {

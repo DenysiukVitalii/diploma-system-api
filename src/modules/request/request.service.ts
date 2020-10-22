@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Request } from './request.entity';
 import { Theme } from '../theme/theme.entity';
 import { CreateRequestDto } from './dto/create-request.dto';
-import { User } from 'modules/users/user.entity';
+import { User } from '../users/user.entity';
 import { Statuses } from './enums/statuses.enum';
 import { ActionRequestDto } from './dto/action-request.dto';
 

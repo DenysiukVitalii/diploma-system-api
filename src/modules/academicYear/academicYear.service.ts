@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { AcademicYear } from './academicYear.entity';
 import { AcademicYearInterface, AcademicYearServiceInterface } from './interfaces';
 import { AcademicYearDto } from './dto/academicYear.dto';
-import { User } from 'modules/users/user.entity';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class AcademicYearService implements AcademicYearServiceInterface {

@@ -1,12 +1,12 @@
 import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { User } from 'modules/users/user.entity';
-import { Degree } from 'modules/degree/degree.entity';
-import { AcademicDegree } from 'modules/academicDegree/academicDegree.entity';
-import { AcademicYear } from 'modules/academicYear/academicYear.entity';
-import { Laboratory } from 'modules/laboratory/laboratory.entity';
-import { Group } from 'modules/group/group.entity';
-import { Theme } from 'modules/theme/theme.entity';
-import { Schedule } from 'modules/schedule/schedule.entity';
+import { User } from '../users/user.entity';
+import { Degree } from '../degree/degree.entity';
+import { AcademicDegree } from '../academicDegree/academicDegree.entity';
+import { AcademicYear } from '../academicYear/academicYear.entity';
+import { Laboratory } from '../laboratory/laboratory.entity';
+import { Group } from '../group/group.entity';
+import { Theme } from '../theme/theme.entity';
+import { Schedule } from '../schedule/schedule.entity';
 
 @Entity()
 export class Department {

@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { AcademicDegree } from './academicDegree.entity';
 import { AcademicDegreeInterface, AcademicDegreeServiceInterface } from './interfaces';
 import { AcademicDegreeDto } from './dto/academicDegree.dto';
-import { User } from 'modules/users/user.entity';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class AcademicDegreeService implements AcademicDegreeServiceInterface {

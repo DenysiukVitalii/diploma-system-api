@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Laboratory } from './laboratory.entity';
 import { LaboratoryInterface, LaboratoryServiceInterface } from './interfaces';
 import { LaboratoryDto } from './dto/laboratory.dto';
-import { User } from 'modules/users/user.entity';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class LaboratoryService implements LaboratoryServiceInterface {

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
-import { Laboratory } from 'modules/laboratory/laboratory.entity';
+import { Laboratory } from '../laboratory/laboratory.entity';
 import { Theme } from '../theme/theme.entity';
 
 @Entity('laboratoryDirection')

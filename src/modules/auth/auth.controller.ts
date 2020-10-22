@@ -6,8 +6,8 @@ import { UsersService } from '../users/users.service';
 import { VerifyTokenDto } from './dto/verify.token.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
-import { ResetPasswordDto } from 'modules/users/dto/reset-password.dto';
-import { RecoverPasswordDto } from 'modules/users/dto/recover-password.dto';
+import { ResetPasswordDto } from '../users/dto/reset-password.dto';
+import { RecoverPasswordDto } from '../users/dto/recover-password.dto';
 
 @Controller('auth')
 export class AuthController {
