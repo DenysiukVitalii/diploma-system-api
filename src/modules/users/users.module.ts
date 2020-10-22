@@ -5,7 +5,7 @@ import { Group } from '../group/group.entity';
 import { Degree } from '../degree/degree.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { Department } from 'modules/department/department.entity';
+import { Department } from '../../modules/department/department.entity';
 import { ApplicationMailerModule } from '../mailer/mailer.module';
 
 @Module({
