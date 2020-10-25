@@ -14,7 +14,7 @@ export const ApplicationContext = async () => {
     app.enableCors({
       credentials: true,
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      origin: ['http://localhost:4000'],
+      origin: ['http://localhost:4000', 'https://diploma-system-app.herokuapp.com'],
     });
 
     const options = new DocumentBuilder()
