@@ -1,4 +1,7 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import xlsx from 'node-xlsx';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
@@ -132,5 +135,19 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.usersService.remove(id);
+  }
+
+  @Auth(Roles.PERSONAL)
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('upload/students')
+  public async uploadExcelWithStudents(
+    @UploadedFile() file,
+    @CurrentUser('departmentId') departmentId: number,
+  ) {
+    const workSheetsFromBuffer = xlsx.parse(file.buffer);
+    if (workSheetsFromBuffer[0]) {
+      const students = this.usersService.studentsMapper(workSheetsFromBuffer[0].data);
+      return this.usersService.registerGroup(workSheetsFromBuffer[0].name, students, departmentId);
+    }
   }
 }
