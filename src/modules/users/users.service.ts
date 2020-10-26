@@ -355,4 +355,32 @@ export class UsersService {
 
     return this.usersRepository.save(user);
   }
+
+  studentsMapper(data: CreateStudentDto[]) {
+    let students = data.slice(1);
+    students = students.map(i => ({
+      firstName: i[1],
+      lastName: i[0],
+      middleName: i[2],
+      email: i[3],
+      groupId: null,
+    }));
+    return students;
+  }
+
+  async registerGroup(groupName: string, studentsData: CreateStudentDto[], departmentId: number) {
+    const group = await this.groupRepository.findOne({ name: groupName });
+
+    if (!group) {
+      throw new NotFoundException('Group not found');
+    }
+
+    const students = studentsData.map(i => ({ ...i, groupId: group.id }));
+
+    students.forEach(i => {
+      this.createStudent(i, departmentId);
+    });
+
+    return students;
+  }
 }
