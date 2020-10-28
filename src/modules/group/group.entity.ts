@@ -1,3 +1,4 @@
+import { Specialty } from 'modules/specialty/specialty.entity';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
@@ -24,6 +25,9 @@ export class Group {
   @Column({ nullable: true })
   academicDegreeId: number;
 
+  @Column({ nullable: true })
+  specialtyId: number;
+
   @OneToMany(type => User, user => user.group)
   users: User[];
 
@@ -35,4 +39,7 @@ export class Group {
 
   @ManyToOne(type => AcademicDegree, academicDegree => academicDegree.groups)
   academicDegree: AcademicDegree;
+
+  @ManyToOne(type => Specialty, specialty => specialty.groups)
+  specialty: Specialty;
 }
