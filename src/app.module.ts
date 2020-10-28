@@ -16,6 +16,7 @@ import { LaboratoryDirectionModule } from './modules/laboratoryDirection/laborat
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { GroupModule } from './modules/group/group.module';
+import { SpecialtyModule } from './modules/specialty/specialty.module';
 import { ThemeModule } from './modules/theme/theme.module';
 import { TeacherLoadModule } from './modules/teacherLoad/teacherLoad.module';
 import { RequestModule } from './modules/request/request.module';
@@ -45,6 +46,7 @@ import { ScheduleModule } from './modules/schedule/schedule.module';
     ThemeModule,
     RequestModule,
     ScheduleModule,
+    SpecialtyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
