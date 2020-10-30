@@ -8,6 +8,10 @@ import { SignUpDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { ResetPasswordDto } from '../users/dto/reset-password.dto';
 import { RecoverPasswordDto } from '../users/dto/recover-password.dto';
+import { ChangePasswordDto } from '../users/dto/change-password.dto';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { Auth } from '../users/decorators/auth.decorator';
+import { Roles } from '../users/enums/roles.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -45,5 +49,11 @@ export class AuthController {
   @Post('recover-password')
   recoverPassword(@Body() recoverPasswordData: RecoverPasswordDto): Promise<object> {
     return this.usersService.recoverPassword(recoverPasswordData);
+  }
+
+  @Auth(Roles.PERSONAL, Roles.TEACHER, Roles.STUDENT)
+  @Post('change-password')
+  changePassword(@Body() changePasswordData: ChangePasswordDto, @CurrentUser('email') email: string): Promise<object> {
+    return this.usersService.changePassword(changePasswordData, email);
   }
 }
