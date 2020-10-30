@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { sign, verify } from 'jsonwebtoken';
-import { hash } from 'bcrypt';
+import { hash, compare } from 'bcrypt';
 
 import { Pagination, paginateRepository } from '../../common/paginate';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -21,6 +21,7 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RecoverPasswordDto } from './dto/recover-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -158,6 +159,29 @@ export class UsersService {
 
     user.password = await hash(recoverPasswordData.password, 10);
     user.isActive = true;
+
+    return this.usersRepository.save(user);
+  }
+
+  async changePassword(changePasswordData: ChangePasswordDto, email: string): Promise<User> {
+    const { oldPassword, password } = changePasswordData;
+    const user = await this.findByEmailWithPassword(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // @ts-ignore
+    const isPasswordCorrect = await compare(
+      oldPassword,
+      user.password,
+    );
+
+    if (!isPasswordCorrect) {
+      throw new NotFoundException('Old password is wrong!');
+    }
+
+    user.password = await hash(password, 10);
 
     return this.usersRepository.save(user);
   }
