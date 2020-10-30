@@ -432,15 +432,12 @@ export class UsersService {
   }
 
   async registerTeachers(teachersData: CreateTeacherExcelDto[], departmentId: number) {
-    const degrees = await this.degreeRepository.find();
+    const degrees = await this.degreeRepository.find({ where: { departmentId } });
 
     const teachers = teachersData.map(i => {
       const degree = degrees.find(item => item.name === i.degree);
       delete i.degree;
-      if (degree) {
-        return ({ ...i, degreeId: degree.id });
-      }
-      return ({ ...i, degreeId: null });
+      return ({ ...i, degreeId: degree ? degree.id : null });
     });
 
     const registeredTeachers = [];
