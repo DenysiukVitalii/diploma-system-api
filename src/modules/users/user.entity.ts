@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Department } from '../../modules/department/department.entity';
 import { Roles } from './enums/roles.enum';
 import { TeacherLoad } from '../../modules/teacherLoad/teacherLoad.entity';
@@ -57,6 +57,12 @@ export class User {
 
   @Column({ nullable: true })
   degreeId: number;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 
   @ManyToOne(type => Department, department => department.users)
   department: Department;

@@ -1,5 +1,5 @@
 import { Specialty } from 'modules/specialty/specialty.entity';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
 import { Department } from '../department/department.entity';
@@ -27,6 +27,12 @@ export class Group {
 
   @Column({ nullable: true })
   specialtyId: number;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 
   @OneToMany(type => User, user => user.group)
   users: User[];

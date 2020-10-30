@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Theme } from '../theme/theme.entity';
 import { User } from '../users/user.entity';
 import { Statuses } from './enums/statuses.enum';
@@ -20,6 +20,12 @@ export class Request {
 
   @Column()
   themeId: number;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 
   @ManyToOne(type => User, student => student.requests, { eager: true })
   student: User;
