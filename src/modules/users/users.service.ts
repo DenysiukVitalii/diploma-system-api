@@ -321,7 +321,10 @@ export class UsersService {
     const group = await this.groupRepository.findOne(createStudentDto.groupId);
 
     if (!group) {
-      throw new NotFoundException('Group not found');
+      throw new NotFoundException({
+        message: 'Group not found',
+        user: createStudentDto,
+      });
     }
 
     const student = {
@@ -424,11 +427,32 @@ export class UsersService {
 
     const students = studentsData.map(i => ({ ...i, groupId: group.id }));
 
-    students.forEach(i => {
-      this.createStudent(i, departmentId);
-    });
+    const registeredStudents = [];
+    const failedStudents = [];
+    const queryRunner = this.connection.createQueryRunner();
 
-    return students;
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      for (const i of students) {
+        const student = await this.createStudent(i, departmentId);
+        registeredStudents.push(student);
+      }
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      if (err.response && err.response.user) {
+        failedStudents.push(err.response.user);
+      }
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+
+    return {
+      registeredStudents,
+      failedStudents,
+    };
   }
 
   async registerTeachers(teachersData: CreateTeacherExcelDto[], departmentId: number) {
