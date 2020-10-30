@@ -10,8 +10,8 @@ import { ResetPasswordDto } from '../users/dto/reset-password.dto';
 import { RecoverPasswordDto } from '../users/dto/recover-password.dto';
 import { ChangePasswordDto } from '../users/dto/change-password.dto';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
-import { Auth } from 'modules/users/decorators/auth.decorator';
-import { Roles } from 'modules/users/enums/roles.enum';
+import { Auth } from '../users/decorators/auth.decorator';
+import { Roles } from '../users/enums/roles.enum';
 
 @Controller('auth')
 export class AuthController {
