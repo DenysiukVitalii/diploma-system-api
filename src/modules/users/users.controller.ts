@@ -150,4 +150,18 @@ export class UsersController {
       return this.usersService.registerGroup(workSheetsFromBuffer[0].name, students, departmentId);
     }
   }
+
+  @Auth(Roles.PERSONAL)
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('upload/teachers')
+  public async uploadExcelWithTeachers(
+    @UploadedFile() file,
+    @CurrentUser('departmentId') departmentId: number,
+  ) {
+    const workSheetsFromBuffer = xlsx.parse(file.buffer);
+    if (workSheetsFromBuffer[0]) {
+      const teachers = this.usersService.teachersMapper(workSheetsFromBuffer[0].data);
+      return this.usersService.registerTeachers(teachers, departmentId);
+    }
+  }
 }

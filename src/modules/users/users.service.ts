@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { sign, verify } from 'jsonwebtoken';
 import { hash, compare } from 'bcrypt';
 
@@ -22,6 +22,7 @@ import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RecoverPasswordDto } from './dto/recover-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { CreateTeacherExcelDto } from './dto/create-teacher-excel.dto';
 
 @Injectable()
 export class UsersService {
@@ -35,6 +36,7 @@ export class UsersService {
     @InjectRepository(Degree)
     private readonly degreeRepository: Repository<Degree>,
     private readonly mailerService: ApplicationMailerService,
+    private connection: Connection,
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
@@ -261,10 +263,19 @@ export class UsersService {
   }
 
   async createTeacher(createTeacherDto: CreateTeacherDto, departmentId: number): Promise<User> {
+    if (!createTeacherDto.degreeId) {
+      throw new NotFoundException({
+        error: 'Degree not found',
+        user: createTeacherDto,
+      });
+    }
     const degree = await this.degreeRepository.findOne(createTeacherDto.degreeId);
 
     if (!degree) {
-      throw new NotFoundException('Degree not found');
+      throw new NotFoundException({
+        error: 'Degree not found',
+        user: createTeacherDto,
+      });
     }
 
     const teacher = {
@@ -392,6 +403,18 @@ export class UsersService {
     return students;
   }
 
+  teachersMapper(data: CreateTeacherExcelDto[]) {
+    let teachers = data.slice(1);
+    teachers = teachers.map(i => ({
+      firstName: i[1],
+      lastName: i[0],
+      middleName: i[2],
+      email: i[3],
+      degree: i[4],
+    }));
+    return teachers;
+  }
+
   async registerGroup(groupName: string, studentsData: CreateStudentDto[], departmentId: number) {
     const group = await this.groupRepository.findOne({ name: groupName });
 
@@ -406,5 +429,45 @@ export class UsersService {
     });
 
     return students;
+  }
+
+  async registerTeachers(teachersData: CreateTeacherExcelDto[], departmentId: number) {
+    const degrees = await this.degreeRepository.find();
+
+    const teachers = teachersData.map(i => {
+      const degree = degrees.find(item => item.name === i.degree);
+      delete i.degree;
+      if (degree) {
+        return ({ ...i, degreeId: degree.id });
+      }
+      return ({ ...i, degreeId: null });
+    });
+
+    const registeredTeachers = [];
+    const failedTeachers = [];
+    const queryRunner = this.connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      for (const i of teachers) {
+        const teacher = await this.createTeacher(i, departmentId);
+        registeredTeachers.push(teacher);
+      }
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      if (err.response && err.response.user) {
+        failedTeachers.push(err.response.user);
+      }
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
+
+    return {
+      registeredTeachers,
+      failedTeachers,
+    };
   }
 }
