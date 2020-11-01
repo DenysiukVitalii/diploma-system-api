@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Readable, Stream } from 'stream';
 
 import { Theme } from './theme.entity';
 import { CreateThemeDto } from './dto/create-theme.dto';
@@ -9,6 +10,8 @@ import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
 import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.entity';
 import { Group } from '../group/group.entity';
+import { downloadFile } from './utils/generateFile';
+import { Degree } from 'modules/degree/degree.entity';
 
 @Injectable()
 export class ThemeService {
@@ -23,6 +26,8 @@ export class ThemeService {
     private readonly academicYearRepository: Repository<AcademicYear>,
     @InjectRepository(LaboratoryDirection)
     private readonly laboratoryDirectionRepository: Repository<LaboratoryDirection>,
+    @InjectRepository(Degree)
+    private readonly degreeRepository: Repository<Degree>,
   ) {}
 
   async findAll(): Promise<Theme[]> {
@@ -192,5 +197,43 @@ export class ThemeService {
     }
 
     return this.themeRepository.remove(theme);
+  }
+
+  getReadableStream(buffer: Buffer): Readable {
+    const stream = new Readable();
+
+    stream.push(buffer);
+    stream.push(null);
+
+    return stream;
+  }
+
+  async downloadFileWithThemes(user: User): Promise<string> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
+    const themes = await this.themeRepository.find({
+      where: { departmentId },
+      order: { id: 'DESC' },
+      relations: ['laboratoryDirection', 'teacher', 'student'],
+    });
+
+    const degrees = await this.degreeRepository.find({ where: { departmentId } });
+    const teachersDegree = {};
+    degrees.forEach(i => {
+      teachersDegree[i.id] = i.name;
+    });
+
+    const formattedThemes = themes.map(i => ({
+      id: i.id,
+      student: i.student && (`${i.student.lastName} ${i.student.firstName} ${i.student.middleName}`),
+      name: i.name,
+      teacher: i.teacher && (`${teachersDegree[i.teacher.degreeId]} ${i.teacher.lastName} ${i.teacher.firstName[0]}.${i.teacher.middleName[0]}.`),
+    }));
+
+    return downloadFile(formattedThemes);
   }
 }

@@ -8,6 +8,7 @@ import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
 import { Group } from '../group/group.entity';
+import { Degree } from 'modules/degree/degree.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Group } from '../group/group.entity';
       AcademicDegree,
       AcademicYear,
       LaboratoryDirection,
+      Degree,
     ]),
   ],
   providers: [ThemeService],
