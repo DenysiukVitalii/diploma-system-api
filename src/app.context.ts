@@ -4,7 +4,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 import { ValidationPipe } from './common/pipes/validation.pipe';
-// import './drive/index';
 
 let app;
 export const ApplicationContext = async () => {

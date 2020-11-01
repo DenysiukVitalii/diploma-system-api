@@ -148,7 +148,11 @@ export class ThemeService {
       },
     });
 
-    const myThemes = await this.themeRepository.find({
+    if (!teacherLoad) {
+      throw new NotFoundException('Teacher load is not set');
+    }
+
+    const myThemesAmount = await this.themeRepository.count({
       where: {
         teacherId: user.id,
         departmentId: user.departmentId,
@@ -157,7 +161,7 @@ export class ThemeService {
       },
     });
 
-    if (teacherLoad.amount > myThemes.length) {
+    if (teacherLoad.amount > myThemesAmount) {
       const theme = await this.themeRepository.create({
         ...data,
         teacherId: user.id,
