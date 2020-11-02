@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Get, Post, Put, Delete, Query } from '@nestjs/common';
+import { Body, Controller, Param, Get, Post, Put, Delete, Query, Response, Header, Res } from '@nestjs/common';
 
 import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
@@ -53,6 +53,20 @@ export class ThemeController {
   @Delete(':themeId/student')
   public deleteStudentFromTheme(@Param('themeId') themeId: number) {
     return this.themeService.deleteStudentFromTheme(themeId);
+  }
+
+  @Auth(Roles.PERSONAL)
+  @Get('download/:academicYear/:academicDegree')
+  async downloadFileWithThemes(@Res() res, @Param() params, @CurrentUser() user: User): Promise<any> {
+    const base64 = await this.themeService.downloadFileWithThemes(user, params.academicYear, params.academicDegree);
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.wordprocessing',
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=FileName.docx');
+
+    return res.send(Buffer.from(base64, 'base64'));
   }
 
   @Get()

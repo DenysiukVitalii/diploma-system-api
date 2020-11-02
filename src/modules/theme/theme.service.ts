@@ -1,3 +1,4 @@
+
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,7 +10,11 @@ import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
 import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.entity';
 import { Group } from '../group/group.entity';
-import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
+import { downloadFile } from './utils/generateFile';
+import { Degree } from '../degree/degree.entity';
+import { Roles } from '../users/enums/roles.enum';
+import { getStudentFullName, getStudentsByGroup, getTeacherByThemeAndStudent, getTeacherFullName, getThemeByStudent } from './utils/utils';
+import { TeacherLoad } from '../teacherLoad/teacherLoad.entity';
 
 @Injectable()
 export class ThemeService {
@@ -24,6 +29,10 @@ export class ThemeService {
     private readonly academicYearRepository: Repository<AcademicYear>,
     @InjectRepository(LaboratoryDirection)
     private readonly laboratoryDirectionRepository: Repository<LaboratoryDirection>,
+    @InjectRepository(Degree)
+    private readonly degreeRepository: Repository<Degree>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     @InjectRepository(TeacherLoad)
     private readonly teacherLoadRepository: Repository<TeacherLoad>,
   ) {}
@@ -223,5 +232,83 @@ export class ThemeService {
     }
 
     return this.themeRepository.remove(theme);
+  }
+
+  async downloadFileWithThemes(
+    user: User,
+    academicYearId: number,
+    academicDegreeId: number,
+  ): Promise<string> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
+    const academicYear = await this.academicYearRepository.findOne(academicYearId);
+
+    if (!academicYear) {
+      throw new NotFoundException('Academic year not found');
+    }
+
+    const academicDegree = await this.academicDegreeRepository.findOne(academicDegreeId);
+
+    if (!academicDegree) {
+      throw new NotFoundException('Academic degree not found');
+    }
+
+    const themes = await this.themeRepository.find({
+      where: {
+        departmentId,
+        academicDegreeId: academicDegree.id,
+        academicYearId: academicYear.id,
+      },
+      order: { id: 'DESC' },
+      relations: ['laboratoryDirection', 'teacher', 'student'],
+    });
+
+    const groups = await this.groupRepository.find({
+      where: {
+        departmentId,
+        academicDegreeId: academicDegree.id,
+        academicYearId: academicYear.id,
+      },
+      relations: ['specialty'],
+    });
+
+    const users = await this.userRepository.find({
+      where: { departmentId, role: Roles.STUDENT },
+    });
+
+    const degrees = await this.degreeRepository.find({ where: { departmentId } });
+    const teachersDegree = {};
+    degrees.forEach(i => {
+      teachersDegree[i.id] = i.name;
+    });
+
+    const formattedThemes = themes.map(i => ({
+      id: i.id,
+      student: getStudentFullName(i.student),
+      studentId: i.student && i.student.id,
+      name: i.name,
+      teacher: getTeacherFullName(i.teacher, teachersDegree[i.teacher.degreeId]),
+    }));
+
+    const data = groups.map(group => ({
+      specialty: group.specialty,
+      groupName: group.name,
+      themes: [
+        ...getStudentsByGroup(users, group.id)
+          .map(i => ({
+            id: i.id,
+            student: getStudentFullName(i),
+            groupId: i.groupId,
+            name: getThemeByStudent(formattedThemes, i.id),
+            teacher: getTeacherByThemeAndStudent(formattedThemes, i.id),
+          })),
+      ],
+    }));
+
+    return downloadFile(data, academicDegree.name);
   }
 }

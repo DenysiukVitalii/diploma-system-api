@@ -8,7 +8,10 @@ import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
 import { Group } from '../group/group.entity';
-import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
+import { Degree } from '../degree/degree.entity';
+import { Specialty } from '../specialty/specialty.entity';
+import { User } from '../users/user.entity';
+import { TeacherLoad } from '../teacherLoad/teacherLoad.entity';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { TeacherLoad } from 'modules/teacherLoad/teacherLoad.entity';
       AcademicDegree,
       AcademicYear,
       LaboratoryDirection,
+      Degree,
+      Specialty,
+      User,
       TeacherLoad,
     ]),
   ],
