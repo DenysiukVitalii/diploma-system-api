@@ -28,8 +28,8 @@ export class RequestController {
 
   @Auth(Roles.STUDENT)
   @Post()
-  create(@Body() creatThemeDto: CreateRequestDto, @CurrentUser() user: User): Promise<object> {
-    return this.requestService.create(creatThemeDto, user);
+  create(@Body() createRequestDto: CreateRequestDto, @CurrentUser() user: User): Promise<object> {
+    return this.requestService.create(createRequestDto, user);
   }
 
   @Auth(Roles.TEACHER)

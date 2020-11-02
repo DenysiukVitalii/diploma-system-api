@@ -8,9 +8,10 @@ import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
 import { Group } from '../group/group.entity';
-import { Degree } from 'modules/degree/degree.entity';
-import { Specialty } from 'modules/specialty/specialty.entity';
-import { User } from 'modules/users/user.entity';
+import { Degree } from '../degree/degree.entity';
+import { Specialty } from '../specialty/specialty.entity';
+import { User } from '../users/user.entity';
+import { TeacherLoad } from '../teacherLoad/teacherLoad.entity';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { User } from 'modules/users/user.entity';
       Degree,
       Specialty,
       User,
+      TeacherLoad,
     ]),
   ],
   providers: [ThemeService],

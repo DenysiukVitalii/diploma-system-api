@@ -34,7 +34,10 @@ export class TeacherLoadService implements TeacherLoadServiceInterface {
   }
 
   findByUserId(id: number): Promise<TeacherLoadInterface[]> {
-    return this.teacherLoadRepository.find({ where: { userId: id } });
+    return this.teacherLoadRepository.find({
+      where: { userId: id },
+      relations: ['academicDegree', 'academicYear'],
+    });
   }
 
   async create(data: TeacherLoadDto, user: User): Promise<TeacherLoad> {

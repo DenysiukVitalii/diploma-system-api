@@ -74,6 +74,7 @@ export class ThemeController {
     return this.themeService.findById(id);
   }
 
+  @Auth(Roles.TEACHER)
   @Post()
   create(@Body() creatThemeDto: CreateThemeDto, @CurrentUser() user: User): Promise<object> {
     return this.themeService.create(creatThemeDto, user);

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -59,7 +59,10 @@ export class RequestService {
     });
 
     if (findRequest) {
-      throw new Error('Request already exist');
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Request already exist',
+      }, HttpStatus.BAD_REQUEST);
     }
 
     const request = await this.requestRepository.create({

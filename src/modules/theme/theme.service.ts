@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException, Res } from '@nestjs/common';
+
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -13,6 +14,7 @@ import { downloadFile } from './utils/generateFile';
 import { Degree } from '../degree/degree.entity';
 import { Roles } from '../users/enums/roles.enum';
 import { getStudentFullName, getStudentsByGroup, getTeacherByThemeAndStudent, getTeacherFullName, getThemeByStudent } from './utils/utils';
+import { TeacherLoad } from '../teacherLoad/teacherLoad.entity';
 
 @Injectable()
 export class ThemeService {
@@ -31,6 +33,8 @@ export class ThemeService {
     private readonly degreeRepository: Repository<Degree>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(TeacherLoad)
+    private readonly teacherLoadRepository: Repository<TeacherLoad>,
   ) {}
 
   async findAll(): Promise<Theme[]> {
@@ -121,7 +125,7 @@ export class ThemeService {
   }
 
   async create(data: CreateThemeDto, user: User): Promise<Theme> {
-    const { departmentId } = user;
+    const { departmentId, id } = user;
 
     if (!departmentId) {
       throw new NotFoundException('Department not found');
@@ -145,17 +149,45 @@ export class ThemeService {
       throw new NotFoundException('Laboratory direction not found');
     }
 
-    const theme = await this.themeRepository.create({
-      ...data,
-      teacherId: user.id,
-      department: { id: departmentId },
-      isConfirmed: false,
-      academicYear,
-      academicDegree,
-      laboratoryDirection,
+    const teacherLoad = await this.teacherLoadRepository.findOne({
+      where: {
+        userId: id,
+        academicYearId: academicYear.id,
+        academicDegreeId: academicDegree.id,
+      },
     });
 
-    return this.themeRepository.save(theme);
+    if (!teacherLoad) {
+      throw new NotFoundException('Teacher load is not set');
+    }
+
+    const myThemesAmount = await this.themeRepository.count({
+      where: {
+        teacherId: user.id,
+        departmentId: user.departmentId,
+        academicYearId: academicYear.id,
+        academicDegreeId: academicDegree.id,
+      },
+    });
+
+    if (teacherLoad.amount > myThemesAmount) {
+      const theme = await this.themeRepository.create({
+        ...data,
+        teacherId: user.id,
+        department: { id: departmentId },
+        isConfirmed: false,
+        academicYear,
+        academicDegree,
+        laboratoryDirection,
+      });
+
+      return this.themeRepository.save(theme);
+    } else {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Teacher load is full',
+      }, HttpStatus.BAD_REQUEST);
+    }
   }
 
   async update(id: number, data: CreateThemeDto): Promise<Theme> {

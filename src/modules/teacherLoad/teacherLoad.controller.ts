@@ -19,6 +19,12 @@ export class TeacherLoadController {
     return this.teacherLoadService.findAll();
   }
 
+  @Auth(Roles.TEACHER)
+  @Get('own')
+  public getOwnTeacherLoad(@CurrentUser() user: User): Promise<TeacherLoadInterface[]> {
+    return this.teacherLoadService.findByUserId(user.id);
+  }
+
   @Get(':id')
   public getById(@Param('id') id: number): Promise<TeacherLoadInterface[]> {
     return this.teacherLoadService.findByUserId(id);
