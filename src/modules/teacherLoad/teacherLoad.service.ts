@@ -10,6 +10,8 @@ import { User } from '../users/user.entity';
 import { Roles } from '../users/enums/roles.enum';
 import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
+import { downloadFile } from './utils/generateFile';
+import { DegreesDto } from './dto/degrees.dto';
 
 @Injectable()
 export class TeacherLoadService implements TeacherLoadServiceInterface {
@@ -121,5 +123,88 @@ export class TeacherLoadService implements TeacherLoadServiceInterface {
     }
 
     return this.teacherLoadRepository.remove(teacherLoad);
+  }
+
+  async downloadFileWithLoad(
+    user: User,
+    academicYearId: number,
+    degrees: number[],
+  ): Promise<string> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
+    const academicYear = await this.academicYearRepository.findOne(academicYearId);
+
+    if (!academicYear) {
+      throw new NotFoundException('Academic year not found');
+    }
+
+    const academicDegrees = await this.academicDegreeRepository.find();
+
+    const loads = await this.teacherLoadRepository.find({
+      where: { departmentId },
+      relations: ['academicDegree'],
+    });
+
+    const users = await this.userRepository.find({
+      where: { departmentId, role: Roles.TEACHER },
+    });
+
+    const data = [];
+
+    users.forEach(i => {
+      const total = loads.reduce(
+        (acc, val) => val.userId === i.id
+          ? acc + val.amount
+          : acc,
+        0);
+
+      const loadByDegrees = loads
+        .filter(load => load.userId === i.id && degrees.includes(load.academicDegreeId))
+        .map(load => ({
+          amount: load.amount,
+          name: load.academicDegree && load.academicDegree.name,
+          id: load.academicDegree && load.academicDegree.id,
+        }));
+
+      if (loadByDegrees.length !== degrees.length) {
+        degrees.forEach(degree => {
+          const academicDegree = academicDegrees.find(item => item.id === degree);
+          const isDegreesIncluded = loadByDegrees.map(i => i.name).includes(academicDegree.name);
+
+          if (academicDegree && !isDegreesIncluded) {
+            loadByDegrees.push({
+              amount: 0,
+              name: academicDegree.name,
+              id: academicDegree.id,
+            });
+          }
+        });
+      }
+
+      const sortedLoadByDegrees = new Array(degrees.length);
+
+      degrees.forEach((degree, idx) => {
+        sortedLoadByDegrees[idx] = loadByDegrees.find(i => i.id === degree);
+      });
+
+      data.push({
+        fullName: `${i.lastName} ${i.firstName[0]}.${i.middleName[0]}.`,
+        total,
+        loadByDegrees: sortedLoadByDegrees,
+      });
+    });
+
+    const resultDegrees = {};
+
+    degrees.forEach((i, idx) => {
+      const academicDegree = academicDegrees.find(item => item.id === i);
+      resultDegrees[`degree${idx + 1}`] = academicDegree.name;
+    });
+
+    return downloadFile(data, resultDegrees);
   }
 }

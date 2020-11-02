@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Res } from '@nestjs/common';
 
 import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { TeacherLoadService } from './teacherLoad.service';
@@ -8,6 +8,7 @@ import { Roles } from '../users/enums/roles.enum';
 import { User } from '../users/user.entity';
 import { Auth } from '../users/decorators/auth.decorator';
 import { TeacherLoadInterface } from './interfaces';
+import { DegreesDto } from './dto/degrees.dto';
 
 @Auth(Roles.PERSONAL)
 @Controller('teacher-load')
@@ -23,6 +24,24 @@ export class TeacherLoadController {
   @Get('own')
   public getOwnTeacherLoad(@CurrentUser() user: User): Promise<TeacherLoadInterface[]> {
     return this.teacherLoadService.findByUserId(user.id);
+  }
+
+  @Post('download/:academicYear')
+  async downloadFileWithLoads(
+    @Body() degreesDto: DegreesDto,
+    @Param() params,
+    @CurrentUser() user: User,
+    @Res() res,
+  ): Promise<any> {
+    const base64 = await this.teacherLoadService.downloadFileWithLoad(user, params.academicYear, degreesDto.degrees);
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.wordprocessing',
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=FileName.docx');
+
+    return res.send(Buffer.from(base64, 'base64'));
   }
 
   @Get(':id')
