@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import xlsx from 'node-xlsx';
 
@@ -62,7 +62,7 @@ export class UsersController {
     return this.usersService.deletePersonal(id);
   }
 
-  @Auth(Roles.PERSONAL)
+  @Auth(Roles.PERSONAL, Roles.TEACHER, Roles.STUDENT)
   @Get('teachers')
   getAllTeachers() {
     return this.usersService.findAllUsersTeachers();
@@ -89,10 +89,10 @@ export class UsersController {
     return this.usersService.deleteTeacher(id);
   }
 
-  @Auth(Roles.PERSONAL)
+  @Auth(Roles.PERSONAL, Roles.TEACHER, Roles.STUDENT)
   @Get('students')
-  getAllStudents(@Query() query: object) {
-    return this.usersService.findAllUsersStudents(query);
+  getAllStudents() {
+    return this.usersService.findAllUsersStudents();
   }
 
   @Auth(Roles.PERSONAL)
