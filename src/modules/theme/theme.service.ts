@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Readable, Stream } from 'stream';
 
 import { Theme } from './theme.entity';
 import { CreateThemeDto } from './dto/create-theme.dto';
@@ -11,7 +10,9 @@ import { AcademicYear } from '../academicYear/academicYear.entity';
 import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.entity';
 import { Group } from '../group/group.entity';
 import { downloadFile } from './utils/generateFile';
-import { Degree } from 'modules/degree/degree.entity';
+import { Degree } from '../degree/degree.entity';
+import { Roles } from '../users/enums/roles.enum';
+import { getStudentFullName, getStudentsByGroup, getTeacherByThemeAndStudent, getTeacherFullName, getThemeByStudent } from './utils/utils';
 
 @Injectable()
 export class ThemeService {
@@ -28,6 +29,8 @@ export class ThemeService {
     private readonly laboratoryDirectionRepository: Repository<LaboratoryDirection>,
     @InjectRepository(Degree)
     private readonly degreeRepository: Repository<Degree>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async findAll(): Promise<Theme[]> {
@@ -199,26 +202,50 @@ export class ThemeService {
     return this.themeRepository.remove(theme);
   }
 
-  getReadableStream(buffer: Buffer): Readable {
-    const stream = new Readable();
-
-    stream.push(buffer);
-    stream.push(null);
-
-    return stream;
-  }
-
-  async downloadFileWithThemes(user: User): Promise<string> {
+  async downloadFileWithThemes(
+    user: User,
+    academicYearId: number,
+    academicDegreeId: number,
+  ): Promise<string> {
     const { departmentId } = user;
 
     if (!departmentId) {
       throw new NotFoundException('Department not found');
     }
 
+    const academicYear = await this.academicYearRepository.findOne(academicYearId);
+
+    if (!academicYear) {
+      throw new NotFoundException('Academic year not found');
+    }
+
+    const academicDegree = await this.academicDegreeRepository.findOne(academicDegreeId);
+
+    if (!academicDegree) {
+      throw new NotFoundException('Academic degree not found');
+    }
+
     const themes = await this.themeRepository.find({
-      where: { departmentId },
+      where: {
+        departmentId,
+        academicDegreeId: academicDegree.id,
+        academicYearId: academicYear.id,
+      },
       order: { id: 'DESC' },
       relations: ['laboratoryDirection', 'teacher', 'student'],
+    });
+
+    const groups = await this.groupRepository.find({
+      where: {
+        departmentId,
+        academicDegreeId: academicDegree.id,
+        academicYearId: academicYear.id,
+      },
+      relations: ['specialty'],
+    });
+
+    const users = await this.userRepository.find({
+      where: { departmentId, role: Roles.STUDENT },
     });
 
     const degrees = await this.degreeRepository.find({ where: { departmentId } });
@@ -229,11 +256,27 @@ export class ThemeService {
 
     const formattedThemes = themes.map(i => ({
       id: i.id,
-      student: i.student && (`${i.student.lastName} ${i.student.firstName} ${i.student.middleName}`),
+      student: getStudentFullName(i.student),
+      studentId: i.student && i.student.id,
       name: i.name,
-      teacher: i.teacher && (`${teachersDegree[i.teacher.degreeId]} ${i.teacher.lastName} ${i.teacher.firstName[0]}.${i.teacher.middleName[0]}.`),
+      teacher: getTeacherFullName(i.teacher, teachersDegree[i.teacher.degreeId]),
     }));
 
-    return downloadFile(formattedThemes);
+    const data = groups.map(group => ({
+      specialty: group.specialty,
+      groupName: group.name,
+      themes: [
+        ...getStudentsByGroup(users, group.id)
+          .map(i => ({
+            id: i.id,
+            student: getStudentFullName(i),
+            groupId: i.groupId,
+            name: getThemeByStudent(formattedThemes, i.id),
+            teacher: getTeacherByThemeAndStudent(formattedThemes, i.id),
+          })),
+      ],
+    }));
+
+    return downloadFile(data, academicDegree.name);
   }
 }

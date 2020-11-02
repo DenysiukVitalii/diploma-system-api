@@ -9,6 +9,8 @@ import { LaboratoryDirection } from '../laboratoryDirection/laboratoryDirection.
 import { AcademicYear } from '../academicYear/academicYear.entity';
 import { Group } from '../group/group.entity';
 import { Degree } from 'modules/degree/degree.entity';
+import { Specialty } from 'modules/specialty/specialty.entity';
+import { User } from 'modules/users/user.entity';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { Degree } from 'modules/degree/degree.entity';
       AcademicYear,
       LaboratoryDirection,
       Degree,
+      Specialty,
+      User,
     ]),
   ],
   providers: [ThemeService],

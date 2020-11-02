@@ -56,9 +56,9 @@ export class ThemeController {
   }
 
   @Auth(Roles.PERSONAL)
-  @Get('download')
-  async downloadFileWithThemes(@Res() res, @CurrentUser() user: User): Promise<any> {
-    const base64 = await this.themeService.downloadFileWithThemes(user);
+  @Get('download/:academicYear/:academicDegree')
+  async downloadFileWithThemes(@Res() res, @Param() params, @CurrentUser() user: User): Promise<any> {
+    const base64 = await this.themeService.downloadFileWithThemes(user, params.academicYear, params.academicDegree);
 
     res.setHeader(
       'Content-Type',
