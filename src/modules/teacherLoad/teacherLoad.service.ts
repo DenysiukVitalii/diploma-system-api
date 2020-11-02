@@ -162,13 +162,18 @@ export class TeacherLoadService implements TeacherLoadServiceInterface {
           : acc,
         0);
 
-      const loadByDegrees = loads
-        .filter(load => load.userId === i.id && degrees.includes(load.academicDegreeId))
-        .map(load => ({
-          amount: load.amount,
-          name: load.academicDegree && load.academicDegree.name,
-          id: load.academicDegree && load.academicDegree.id,
-        }));
+      const loadByDegrees = loads.reduce((acc, val) =>
+        val.userId === i.id && degrees.includes(val.academicDegreeId)
+          ? [
+            ...acc,
+            {
+              amount: val.amount,
+              name: val.academicDegree && val.academicDegree.name,
+              id: val.academicDegree && val.academicDegree.id,
+            },
+          ]
+          : acc, []
+      );
 
       if (loadByDegrees.length !== degrees.length) {
         degrees.forEach(degree => {
