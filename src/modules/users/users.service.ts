@@ -4,7 +4,6 @@ import { Connection, Repository } from 'typeorm';
 import { sign, verify } from 'jsonwebtoken';
 import { hash, compare } from 'bcrypt';
 
-import { Pagination, paginateRepository } from '../../common/paginate';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { CreateHeadDto } from '../admin/dto/create.head.dto';
@@ -89,9 +88,8 @@ export class UsersService {
     });
   }
 
-  async findAllUsersStudents(query): Promise<Pagination<User>> {
-    const { perPage = 1000, page = 1 } = query;
-    return paginateRepository(this.usersRepository, { perPage, page }, {
+  async findAllUsersStudents(): Promise<User[]> {
+    return this.usersRepository.find({
       where: { role: Roles.STUDENT },
       order: { id: 'DESC' },
       relations: ['group'],
@@ -133,7 +131,7 @@ export class UsersService {
     }
 
     const token = sign({ email: user.email, verify: true }, jwtConstants.secret);
-    Logger.log("RECOVER TOKEN");
+    Logger.log('RECOVER TOKEN');
     Logger.log(token);
 
     await this.mailerService.sendMail(
