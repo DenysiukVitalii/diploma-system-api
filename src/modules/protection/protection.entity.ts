@@ -1,15 +1,14 @@
 import { Group } from 'modules/group/group.entity';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Department } from '../department/department.entity';
+import { Comission } from './comission.entity';
 import { ProtectionType } from './protectionType.entity';
+import { StudentProtection } from './studentProtection.entity';
 
 @Entity('protection')
 export class Protection {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  name: string;
 
   @Column({ type: 'timestamp' })
   date: Date;
@@ -18,16 +17,10 @@ export class Protection {
   place: string;
 
   @Column({ nullable: true })
-  departmentId: number;
-
-  @Column({ nullable: true })
   groupId: number;
 
   @Column({ nullable: true })
-  studentIds: number[];
-
-  @Column({ nullable: true })
-  teacherIds: number[];
+  protectionTypeId: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -35,12 +28,15 @@ export class Protection {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToOne(type => Department, department => department.groups)
-  department: Department;
-
-  @ManyToOne(type => Group, group => group.protections)
+  @ManyToOne(type => Group, group => group.protections, { onDelete: 'CASCADE' })
   group: Group;
 
-  @ManyToOne(type => ProtectionType, protectionType => protectionType.protections)
+  @ManyToOne(type => ProtectionType, protectionType => protectionType.protections, { onDelete: 'CASCADE' })
   protectionType: ProtectionType;
+
+  @OneToMany(type => Comission, comission => comission.protection)
+  comissions: Comission[];
+
+  @OneToMany(type => StudentProtection, studentProtection => studentProtection.protection)
+  studentProtections: StudentProtection[];
 }

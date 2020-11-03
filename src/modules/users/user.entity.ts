@@ -6,6 +6,8 @@ import { Group } from '../group/group.entity';
 import { Degree } from '../degree/degree.entity';
 import { Theme } from '../theme/theme.entity';
 import { Request } from '../request/request.entity';
+import { Comission } from 'modules/protection/comission.entity';
+import { StudentProtection } from 'modules/protection/studentProtection.entity';
 
 @Entity()
 export class User {
@@ -78,6 +80,12 @@ export class User {
 
   @OneToMany(type => Theme, theme => theme.teacher)
   themes: Theme[];
+
+  @OneToMany(type => Comission, comission => comission.teacher)
+  comissions: Comission[];
+
+  @OneToMany(type => StudentProtection, studentProtection => studentProtection.student)
+  studentProtections: StudentProtection[];
 
   @OneToMany(type => Theme, theme => theme.student)
   studentThemes: Theme[];

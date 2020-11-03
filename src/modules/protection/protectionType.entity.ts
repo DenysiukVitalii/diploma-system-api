@@ -29,7 +29,7 @@ export class ProtectionType {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @ManyToOne(type => Department, department => department.groups)
+  @ManyToOne(type => Department, department => department.protectionTypes)
   department: Department;
 
   @OneToMany(type => Protection, protection => protection.protectionType)

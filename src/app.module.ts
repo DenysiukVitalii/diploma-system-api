@@ -21,6 +21,7 @@ import { ThemeModule } from './modules/theme/theme.module';
 import { TeacherLoadModule } from './modules/teacherLoad/teacherLoad.module';
 import { RequestModule } from './modules/request/request.module';
 import { ScheduleModule } from './modules/schedule/schedule.module';
+import { ProtectionModule } from './modules/protection/protection.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ScheduleModule } from './modules/schedule/schedule.module';
     RequestModule,
     ScheduleModule,
     SpecialtyModule,
+    ProtectionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -8,6 +8,7 @@ import { Group } from '../group/group.entity';
 import { Theme } from '../theme/theme.entity';
 import { Schedule } from '../schedule/schedule.entity';
 import { Specialty } from 'modules/specialty/specialty.entity';
+import { ProtectionType } from 'modules/protection/protectionType.entity';
 
 @Entity()
 export class Department {
@@ -43,4 +44,7 @@ export class Department {
 
   @OneToMany(type => Schedule, schedule => schedule.department)
   schedules: Schedule[];
+
+  @OneToMany(type => ProtectionType, protectionType => protectionType.department)
+  protectionTypes: ProtectionType[];
 }
