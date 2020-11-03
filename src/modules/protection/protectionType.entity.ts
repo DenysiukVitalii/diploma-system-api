@@ -1,33 +1,27 @@
-import { Protection } from 'modules/protection/protection.entity';
 import { Specialty } from 'modules/specialty/specialty.entity';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
 import { Department } from '../department/department.entity';
 import { User } from '../users/user.entity';
+import { Protection } from './protection.entity';
 
-@Entity('group')
-export class Group {
+@Entity('protectionType')
+export class ProtectionType {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
 
-  @Column()
-  amountStudents: number;
+  @Column({ type: 'timestamp' })
+  dateStart: Date;
+
+  @Column({ type: 'timestamp' })
+  dateEnd: Date;
 
   @Column({ nullable: true })
   departmentId: number;
-
-  @Column({ nullable: true })
-  academicYearId: number;
-
-  @Column({ nullable: true })
-  academicDegreeId: number;
-
-  @Column({ nullable: true })
-  specialtyId: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -35,21 +29,9 @@ export class Group {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToMany(type => User, user => user.group)
-  users: User[];
-
   @ManyToOne(type => Department, department => department.groups)
   department: Department;
 
-  @ManyToOne(type => AcademicYear, academicYear => academicYear.groups)
-  academicYear: AcademicYear;
-
-  @ManyToOne(type => AcademicDegree, academicDegree => academicDegree.groups)
-  academicDegree: AcademicDegree;
-
-  @ManyToOne(type => Specialty, specialty => specialty.groups)
-  specialty: Specialty;
-
-  @OneToMany(type => Protection, protection => protection.group)
+  @OneToMany(type => Protection, protection => protection.protectionType)
   protections: Protection[];
 }
