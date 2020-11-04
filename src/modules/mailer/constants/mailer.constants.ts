@@ -1,6 +1,10 @@
 export enum MessageType {
   NewUser = 'NewUser',
   PasswordReset = 'PasswordReset',
+  RequestCreated = 'RequestCreated',
+  RequestConfirmed = 'RequestConfirmed',
+  RequestRejected = 'RequestRejected',
+  ThemeAction = 'ThemeAction',
 }
 
 export const MessageTypes = {
@@ -11,5 +15,21 @@ export const MessageTypes = {
   [MessageType.PasswordReset]: {
     template: 'passwordReset',
     subject: 'Password Reset initiated',
+  },
+  [MessageType.RequestCreated]: {
+    template: 'requestCreated',
+    subject: 'Нова заявка!',
+  },
+  [MessageType.RequestConfirmed]: {
+    template: 'requestConfirmed',
+    subject: 'Заявка прийнята!',
+  },
+  [MessageType.RequestRejected]: {
+    template: 'requestRejected',
+    subject: 'Заявку відхилено',
+  },
+  [MessageType.ThemeAction]: {
+    template: 'themeAction',
+    subject: 'Затвердження теми',
   },
 };

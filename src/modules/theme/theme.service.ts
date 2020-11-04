@@ -15,6 +15,9 @@ import { Degree } from '../degree/degree.entity';
 import { Roles } from '../users/enums/roles.enum';
 import { getStudentFullName, getStudentsByGroup, getTeacherByThemeAndStudent, getTeacherFullName, getThemeByStudent } from './utils/utils';
 import { TeacherLoad } from '../teacherLoad/teacherLoad.entity';
+import { ApplicationMailerService } from 'modules/mailer/mailer.service';
+import { MessageType } from 'modules/mailer/constants/mailer.constants';
+import { getFullName } from '../../common/utils';
 
 @Injectable()
 export class ThemeService {
@@ -35,6 +38,7 @@ export class ThemeService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(TeacherLoad)
     private readonly teacherLoadRepository: Repository<TeacherLoad>,
+    private readonly mailerService: ApplicationMailerService,
   ) {}
 
   async findAll(): Promise<Theme[]> {
@@ -98,8 +102,10 @@ export class ThemeService {
     });
   }
 
-  async deleteStudentFromTheme(id: number) {
-    const theme = await this.themeRepository.findOne(id);
+  async deleteStudentFromTheme(id: number, user: User) {
+    const theme = await this.themeRepository.findOne({
+      where: { id, teacherId: user.id },
+    });
 
     if (!theme) {
       throw new NotFoundException();
@@ -112,11 +118,24 @@ export class ThemeService {
   }
 
   async setConfirmed(id: number, isConfirmed: boolean) {
-    const theme = await this.themeRepository.findOne(id);
+    const theme = await this.themeRepository.findOne({
+      where: { id },
+      relations: ['teacher'],
+    });
 
     if (!theme) {
       throw new NotFoundException();
     }
+
+    await this.mailerService.sendMail(
+      theme.teacher.email,
+      MessageType.ThemeAction,
+      {
+        teacher: getFullName(theme.teacher),
+        theme: theme.name,
+        isConfirmed: isConfirmed ? 'Так' : 'Ні',
+      },
+    );
 
     return this.themeRepository.save({
       ...theme,

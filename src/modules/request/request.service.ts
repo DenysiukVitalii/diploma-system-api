@@ -8,6 +8,9 @@ import { CreateRequestDto } from './dto/create-request.dto';
 import { User } from '../users/user.entity';
 import { Statuses } from './enums/statuses.enum';
 import { ActionRequestDto } from './dto/action-request.dto';
+import { ApplicationMailerService } from 'modules/mailer/mailer.service';
+import { MessageType } from '../mailer/constants/mailer.constants';
+import { getFullName } from '../../common/utils';
 
 @Injectable()
 export class RequestService {
@@ -16,6 +19,9 @@ export class RequestService {
     private readonly requestRepository: Repository<Request>,
     @InjectRepository(Theme)
     private readonly themeRepository: Repository<Theme>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly mailerService: ApplicationMailerService,
   ) {}
 
   async findAll(user: User): Promise<Request[]> {
@@ -28,10 +34,7 @@ export class RequestService {
 
   async findAllAndDelete(user: User, themeId) {
     const requests = await this.requestRepository.find({
-      where: [
-        { studentId: user.id },
-        { themeId }, // todo doe'nt work
-      ],
+      where: { studentId: user.id, themeId },
     });
 
     const ids = requests.map(el => el.id);
@@ -40,7 +43,7 @@ export class RequestService {
 
   async findById(id: number): Promise<Request> {
     const request = await this.requestRepository.findOne(id, {
-      relations: ['theme'],
+      relations: ['theme', 'student'],
     });
 
     if (!request) {
@@ -51,6 +54,17 @@ export class RequestService {
   }
 
   async create(data: CreateRequestDto, user: User): Promise<Request> {
+    const studentTheme = await this.themeRepository.findOne({
+      where: { studentId: user.id },
+    });
+
+    if (studentTheme) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Student already has theme',
+      }, HttpStatus.BAD_REQUEST);
+    }
+
     const findRequest = await this.requestRepository.findOne({
       where: {
         themeId: data.themeId,
@@ -65,6 +79,18 @@ export class RequestService {
       }, HttpStatus.BAD_REQUEST);
     }
 
+    const theme = await this.themeRepository.findOne({
+      where: { id: data.themeId },
+      relations: ['teacher'],
+    });
+
+    if (!theme) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Theme not found',
+      }, HttpStatus.BAD_REQUEST);
+    }
+
     const request = await this.requestRepository.create({
       ...data,
       studentId: user.id,
@@ -72,6 +98,20 @@ export class RequestService {
     });
 
     await this.requestRepository.save(request);
+
+    const { teacher } = theme;
+
+    await this.mailerService.sendMail(
+      theme.teacher.email,
+      MessageType.RequestCreated,
+      {
+        teacher: getFullName(teacher),
+        student: getFullName(user),
+        group: user.group.name,
+        theme: theme.name,
+      },
+    );
+
     return this.findById(request.id);
   }
 
@@ -89,8 +129,29 @@ export class RequestService {
       });
 
       await this.findAllAndDelete(user, request.themeId);
+
+      await this.mailerService.sendMail(
+        request.student.email,
+        MessageType.RequestConfirmed,
+        {
+          teacher: getFullName(user),
+          student: getFullName(request.student),
+          theme: request.theme.name,
+        },
+      );
+
       return { ...request, status: Statuses.CONFIRMED };
     } else {
+      await this.mailerService.sendMail(
+        request.student.email,
+        MessageType.RequestRejected,
+        {
+          teacher: getFullName(user),
+          student: getFullName(request.student),
+          theme: request.theme.name,
+        },
+      );
+
       // @ts-ignore
       return this.requestRepository.save({
         ...request,

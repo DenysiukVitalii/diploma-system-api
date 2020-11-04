@@ -12,6 +12,7 @@ import { Degree } from '../degree/degree.entity';
 import { Specialty } from '../specialty/specialty.entity';
 import { User } from '../users/user.entity';
 import { TeacherLoad } from '../teacherLoad/teacherLoad.entity';
+import { ApplicationMailerModule } from '../mailer/mailer.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TeacherLoad } from '../teacherLoad/teacherLoad.entity';
       User,
       TeacherLoad,
     ]),
+    ApplicationMailerModule,
   ],
   providers: [ThemeService],
   exports: [ThemeService],

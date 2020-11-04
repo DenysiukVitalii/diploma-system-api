@@ -51,8 +51,8 @@ export class ThemeController {
 
   @Auth(Roles.TEACHER)
   @Delete(':themeId/student')
-  public deleteStudentFromTheme(@Param('themeId') themeId: number) {
-    return this.themeService.deleteStudentFromTheme(themeId);
+  public deleteStudentFromTheme(@Param('themeId') themeId: number, @CurrentUser() user: User) {
+    return this.themeService.deleteStudentFromTheme(themeId, user);
   }
 
   @Auth(Roles.PERSONAL)
