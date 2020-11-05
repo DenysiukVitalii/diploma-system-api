@@ -70,7 +70,7 @@ export class User {
   @ManyToOne(type => Group, group => group.users, { eager: true })
   group: Group;
 
-  @ManyToOne(type => Degree, degree => degree.users)
+  @ManyToOne(type => Degree, degree => degree.users, { eager: true })
   degree: Degree;
 
   @OneToMany(type => TeacherLoad, teacherLoad => teacherLoad.user)
