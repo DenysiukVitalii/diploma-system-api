@@ -163,7 +163,7 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async changePassword(changePasswordData: ChangePasswordDto, email: string): Promise<User> {
+  async changePassword(changePasswordData: ChangePasswordDto, email: string): Promise<object> {
     const { oldPassword, password } = changePasswordData;
     const user = await this.findByEmailWithPassword(email);
 
@@ -183,7 +183,11 @@ export class UsersService {
 
     user.password = await hash(password, 10);
 
-    return this.usersRepository.save(user);
+    await this.usersRepository.save(user);
+
+    return {
+      message: 'Password has been changed',
+    };
   }
 
   async createHead(createHeadDto: CreateHeadDto): Promise<User> {
