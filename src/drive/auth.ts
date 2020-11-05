@@ -43,15 +43,20 @@ function getAccessToken(oAuth2Client, callback) {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-export function authorize(credentials, callback) {
+export async function authorize(credentials) {
   const {client_secret, client_id, redirect_uris} = credentials.web;
   const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);
 
-  // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getAccessToken(oAuth2Client, callback);
-    oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client);
+  return new Promise(resolve => {
+    fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) {
+        return getAccessToken(oAuth2Client, resolve);
+      }
+
+      oAuth2Client.setCredentials(JSON.parse(token));
+
+      resolve(oAuth2Client);
+    });
   });
 }
