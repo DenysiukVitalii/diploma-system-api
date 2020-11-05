@@ -1,6 +1,4 @@
-import { HttpException, HttpStatus } from "@nestjs/common";
-
-const fs = require('fs');
+import { HttpException } from '@nestjs/common';
 const {google} = require('googleapis');
 
 /**
