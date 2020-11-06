@@ -33,12 +33,14 @@ export class RequestService {
   }
 
   async findAllAndDelete(user: User, themeId) {
-    const requests = await this.requestRepository.find({
+    const request = await this.requestRepository.findOne({
       where: { studentId: user.id, themeId },
     });
 
-    const ids = requests.map(el => el.id);
-    await this.requestRepository.delete(ids);
+    console.log('request', request);
+
+    // const ids = request.map(el => el.id);
+    await this.requestRepository.delete(request.id);
   }
 
   async findById(id: number): Promise<Request> {
@@ -128,7 +130,7 @@ export class RequestService {
         student: request.student,
       });
 
-      await this.findAllAndDelete(user, request.themeId);
+      await this.findAllAndDelete(request.student, request.themeId);
 
       await this.mailerService.sendMail(
         request.student.email,
