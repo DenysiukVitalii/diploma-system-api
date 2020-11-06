@@ -20,7 +20,7 @@ export class ExportController {
     return this.exportService.getFilesFromDrive(folderId);
   }
 
-  @Get('file/:fileId')
+  @Post('file/:fileId')
   async getFile(@Res() res, @Param('fileId') fileId) {
     const blob: any = await this.exportService.getFileFromDrive(fileId);
 
@@ -60,7 +60,7 @@ export class ExportController {
   @Get('student/files')
   async getMyStudentFiles(@CurrentUser() user: User) {
     const folders: any = await this.exportService.getFoldersFromDrive();
-    const folder = folders.find(i => i.name === user.lastName);
+    const folder = folders.find(i => i.name === `${user.lastName} ${user.firstName} ${user.middleName}`);
 
     return this.exportService.getFilesFromDrive(folder.id);
   }
