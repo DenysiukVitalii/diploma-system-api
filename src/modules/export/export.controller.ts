@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Header, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, Header, HttpException, HttpStatus, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Auth } from 'modules/users/decorators/auth.decorator';
 import { CurrentUser } from 'modules/users/decorators/current-user.decorator';
@@ -39,7 +39,7 @@ export class ExportController {
   ) {
     const folders: any = await this.exportService.getFoldersFromDrive();
     const groupFolder = folders.find(i => i.name === user.group.name);
-    let studentFolder = folders.find(i => i.name === user.lastName);
+    let studentFolder = folders.find(i => i.name === `${user.lastName} ${user.firstName} ${user.middleName}`);
 
     if (!studentFolder) {
       studentFolder = await this.exportService.createStudentFolder(user, groupFolder);
@@ -47,7 +47,10 @@ export class ExportController {
     } else {
       const studentFiles = await this.getFiles(studentFolder.id);
       if (studentFiles.length === 1) {
-        return { error: 'Student already has file' };
+        throw new HttpException({
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Student already has file',
+        }, HttpStatus.BAD_REQUEST);
       }
       return this.exportService.uploadFileToDrive(file, studentFolder.id);
     }

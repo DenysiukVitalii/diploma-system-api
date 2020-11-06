@@ -61,7 +61,7 @@ export class ExportService {
   createStudentFolder = async (student, groupFolder) => {
     try {
       const auth = await this.auth();
-      return studentFolder(auth, student.lastName, groupFolder);
+      return studentFolder(auth, student, groupFolder);
     } catch (e) {
       console.log('Error loading client secret file:', e);
     }

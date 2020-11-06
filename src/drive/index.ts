@@ -99,10 +99,10 @@ export function uploadFile(auth, file, folderId) {
   });
 }
 
-export async function studentFolder(auth, studentName, groupFolder) {
+export async function studentFolder(auth, student, groupFolder) {
   const drive = google.drive({ version: 'v3', auth });
   const fileMetadata = {
-    name: studentName,
+    name: `${student.lastName} ${student.firstName} ${student.middleName}`,
     mimeType: 'application/vnd.google-apps.folder',
     parents: [groupFolder.id],
   };
