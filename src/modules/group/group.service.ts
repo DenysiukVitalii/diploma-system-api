@@ -16,14 +16,14 @@ export class GroupService {
   async findAll(): Promise<Group[]> {
     return this.groupRepository.find({
       order: { id: 'DESC' },
-      relations: ['academicDegree', 'academicYear'],
+      relations: ['academicDegree', 'academicYear', 'specialty'],
     });
   }
 
   async findById(id: number): Promise<Group> {
     const group = await this.groupRepository.findOne(id, {
       order: { id: 'DESC' },
-      relations: ['academicDegree', 'academicYear'],
+      relations: ['academicDegree', 'academicYear', 'specialty'],
     });
 
     if (!group) {
