@@ -43,7 +43,10 @@ export class ExportController {
 
     if (!studentFolder) {
       studentFolder = await this.exportService.createStudentFolder(user, groupFolder);
-      return this.exportService.uploadFileToDrive(file, studentFolder.id);
+      await this.exportService.uploadFileToDrive(file, studentFolder.id);
+      return {
+        message: 'File uploaded',
+      };
     } else {
       const studentFiles = await this.getFiles(studentFolder.id);
       if (studentFiles.length === 1) {
@@ -52,7 +55,10 @@ export class ExportController {
           error: 'Student already has file',
         }, HttpStatus.BAD_REQUEST);
       }
-      return this.exportService.uploadFileToDrive(file, studentFolder.id);
+      await this.exportService.uploadFileToDrive(file, studentFolder.id);
+      return {
+        message: 'File uploaded',
+      };
     }
   }
 
