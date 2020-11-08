@@ -1,4 +1,4 @@
-import { Group } from 'modules/group/group.entity';
+import { Group } from '../group/group.entity';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Department } from '../department/department.entity';
 

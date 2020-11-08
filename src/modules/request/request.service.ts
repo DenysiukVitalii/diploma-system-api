@@ -8,7 +8,7 @@ import { CreateRequestDto } from './dto/create-request.dto';
 import { User } from '../users/user.entity';
 import { Statuses } from './enums/statuses.enum';
 import { ActionRequestDto } from './dto/action-request.dto';
-import { ApplicationMailerService } from 'modules/mailer/mailer.service';
+import { ApplicationMailerService } from '../mailer/mailer.service';
 import { MessageType } from '../mailer/constants/mailer.constants';
 import { getFullName } from '../../common/utils';
 

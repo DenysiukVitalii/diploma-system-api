@@ -7,7 +7,7 @@ import { Laboratory } from '../laboratory/laboratory.entity';
 import { Group } from '../group/group.entity';
 import { Theme } from '../theme/theme.entity';
 import { Schedule } from '../schedule/schedule.entity';
-import { Specialty } from 'modules/specialty/specialty.entity';
+import { Specialty } from '../specialty/specialty.entity';
 
 @Entity()
 export class Department {

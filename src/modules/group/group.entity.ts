@@ -1,4 +1,4 @@
-import { Specialty } from 'modules/specialty/specialty.entity';
+import { Specialty } from '../specialty/specialty.entity';
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';

@@ -1,9 +1,9 @@
 import { Controller, Delete, Get, Header, HttpException, HttpStatus, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Auth } from 'modules/users/decorators/auth.decorator';
-import { CurrentUser } from 'modules/users/decorators/current-user.decorator';
-import { Roles } from 'modules/users/enums/roles.enum';
-import { User } from 'modules/users/user.entity';
+import { Auth } from '../users/decorators/auth.decorator';
+import { CurrentUser } from '../users/decorators/current-user.decorator';
+import { Roles } from '../users/enums/roles.enum';
+import { User } from '../users/user.entity';
 import { ExportService } from './export.service';
 
 @Controller('export')

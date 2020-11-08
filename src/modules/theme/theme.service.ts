@@ -15,8 +15,8 @@ import { Degree } from '../degree/degree.entity';
 import { Roles } from '../users/enums/roles.enum';
 import { getStudentFullName, getStudentsByGroup, getTeacherByThemeAndStudent, getTeacherFullName, getThemeByStudent } from './utils/utils';
 import { TeacherLoad } from '../teacherLoad/teacherLoad.entity';
-import { ApplicationMailerService } from 'modules/mailer/mailer.service';
-import { MessageType } from 'modules/mailer/constants/mailer.constants';
+import { ApplicationMailerService } from '../mailer/mailer.service';
+import { MessageType } from '../mailer/constants/mailer.constants';
 import { getFullName } from '../../common/utils';
 
 @Injectable()
