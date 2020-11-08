@@ -66,7 +66,7 @@ export class ExportController {
   @Get('student/files')
   async getMyStudentFiles(@CurrentUser() user: User) {
     const folders: any = await this.exportService.getFoldersFromDrive();
-    const folder = folders.find(i => i.name === `${user.lastName} ${user.firstName} ${user.middleName}`);
+    const folder = folders.find(i => i.name === `${user.lastName} (${user.email})`);
 
     return this.exportService.getFilesFromDrive(folder.id);
   }
