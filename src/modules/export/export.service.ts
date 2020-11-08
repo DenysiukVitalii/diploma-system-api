@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { authorize } from '../../drive/auth';
 import { getFile, getFolders, listFiles, uploadFile, studentFolder, deleteFile } from '../../drive';
-import { ConfigService } from 'config/config.service';
+import { ConfigService } from '../../config/config.service';
 
 @Injectable()
 export class ExportService {

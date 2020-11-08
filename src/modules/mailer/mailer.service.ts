@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nest-modules/mailer';
 import { MessageType, MessageTypes } from './constants/mailer.constants';
 import { EmailMessage, EmailMessageContext } from './dto/email.message.dto';
-import { ConfigService } from 'config/config.service';
+import { ConfigService } from '../../config/config.service';
 
 @Injectable()
 export class ApplicationMailerService {
