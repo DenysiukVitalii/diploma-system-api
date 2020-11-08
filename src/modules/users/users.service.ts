@@ -7,6 +7,7 @@ import { hash, compare } from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { CreateHeadDto } from '../admin/dto/create.head.dto';
+import { CreateHashDto } from './dto/create-hash.dto';
 import { Roles } from './enums/roles.enum';
 import { Department } from '../department/department.entity';
 import { Group } from '../group/group.entity';
@@ -46,6 +47,10 @@ export class UsersService {
     user.middleName = createUserDto.middleName;
 
     return this.usersRepository.save(user);
+  }
+
+  createHash(createHashDto: CreateHashDto): Promise<string> {
+    return hash(createHashDto.password, 10);
   }
 
   async findAll(): Promise<User[]> {

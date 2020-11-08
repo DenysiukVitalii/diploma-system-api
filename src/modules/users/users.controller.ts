@@ -10,10 +10,18 @@ import { Roles } from './enums/roles.enum';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
+import { CreateHashDto } from './dto/create-hash.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Post('hash')
+  createHash(
+    @Body() createHashDto: CreateHashDto,
+  ): Promise<string> {
+    return this.usersService.createHash(createHashDto);
+  }
 
   @Auth(Roles.TEACHER)
   @Get('personals')
