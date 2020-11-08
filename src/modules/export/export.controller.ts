@@ -39,7 +39,7 @@ export class ExportController {
   ) {
     const folders: any = await this.exportService.getFoldersFromDrive();
     const groupFolder = folders.find(i => i.name === user.group.name);
-    let studentFolder = folders.find(i => i.name === `${user.lastName} ${user.firstName} ${user.middleName}`);
+    let studentFolder = folders.find(i => i.name === `${user.lastName} (${user.email})`);
 
     if (!studentFolder) {
       studentFolder = await this.exportService.createStudentFolder(user, groupFolder);
