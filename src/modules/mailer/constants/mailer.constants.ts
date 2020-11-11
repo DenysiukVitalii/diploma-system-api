@@ -10,11 +10,11 @@ export enum MessageType {
 export const MessageTypes = {
   [MessageType.NewUser]: {
     template: 'newUser',
-    subject: 'New user',
+    subject: 'Новий користувач',
   },
   [MessageType.PasswordReset]: {
     template: 'passwordReset',
-    subject: 'Password Reset initiated',
+    subject: 'Відновлення паролю',
   },
   [MessageType.RequestCreated]: {
     template: 'requestCreated',
