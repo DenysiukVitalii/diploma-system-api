@@ -79,15 +79,9 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async findAllUsersHeads(user: User): Promise<User[]> {
-    const { departmentId } = user;
-
-    if (!departmentId) {
-      throw new NotFoundException('Department not found');
-    }
-
+  async findAllUsersHeads(): Promise<User[]> {
     return this.usersRepository.find({
-      where: { role: Roles.TEACHER, isHead: true, departmentId },
+      where: { role: Roles.TEACHER, isHead: true },
       order: { id: 'DESC' },
       relations: ['department'],
     });
