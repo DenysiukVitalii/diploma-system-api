@@ -20,14 +20,17 @@ export class LaboratoryDirectionService implements LaboratoryDirectionServiceInt
   async findAll(user: User): Promise<LaboratoryDirection[]> {
     const { departmentId } = user;
 
-    const allDirections = await this.laboratoryDirectionRepository.find({
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
+    return this.laboratoryDirectionRepository.find({
+      where: { departmentId },
       relations: ['laboratory'],
       order: {
         id: 'DESC',
       },
     });
-
-    return allDirections.filter(i => i.laboratory && i.laboratory.departmentId === departmentId);
   }
 
   async create(data: LaboratoryDirectionInterface): Promise<LaboratoryDirection> {

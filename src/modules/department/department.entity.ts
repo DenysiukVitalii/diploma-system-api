@@ -8,6 +8,7 @@ import { Group } from '../group/group.entity';
 import { Theme } from '../theme/theme.entity';
 import { Schedule } from '../schedule/schedule.entity';
 import { Specialty } from '../specialty/specialty.entity';
+import { LaboratoryDirection } from 'modules/laboratoryDirection/laboratoryDirection.entity';
 
 @Entity()
 export class Department {
@@ -31,6 +32,9 @@ export class Department {
 
   @OneToMany(type => Laboratory, laboratory => laboratory.department)
   laboratories: Laboratory[];
+
+  @OneToMany(type => LaboratoryDirection, laboratoryDirection => laboratoryDirection.department)
+  laboratoryDirections: LaboratoryDirection[];
 
   @OneToMany(type => Group, group => group.department)
   groups: Group[];
