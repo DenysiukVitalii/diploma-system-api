@@ -12,6 +12,7 @@ import { Roles } from './enums/roles.enum';
 import { Department } from '../department/department.entity';
 import { Group } from '../group/group.entity';
 import { Degree } from '../degree/degree.entity';
+import { ConfigService } from '../../config/config.service';
 import { ApplicationMailerService } from '../mailer/mailer.service';
 import { MessageType } from '../mailer/constants/mailer.constants';
 import { jwtConstants } from '../auth/constants';
@@ -37,6 +38,7 @@ export class UsersService {
     private readonly degreeRepository: Repository<Degree>,
     private readonly mailerService: ApplicationMailerService,
     private connection: Connection,
+    private readonly configService: ConfigService,
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
@@ -109,19 +111,34 @@ export class UsersService {
     });
   }
 
+  getRoleUkr(role: string, isHead: boolean) {
+    if (isHead) {
+      return 'Завідувач кафедри';
+    }
+    const roles = {
+      TEACHER: 'Викладач',
+      PERSONAL: 'Навчальний персонал',
+      STUDENT: 'Студент',
+      TEACHER_HEAD: 'Завідувач кафедри',
+    };
+    return roles[role];
+  }
+
   async createUser(userData: object): Promise<User> {
     const user = await this.usersRepository.create(userData);
 
     await this.usersRepository.save(user);
 
-    const token = sign({ email: user.email, verify: true }, jwtConstants.secret);
+    const token = sign({ email: user.email, verify: true }, this.configService.get('JWT_SECRET'));
 
     await this.mailerService.sendMail(
       user.email,
       MessageType.NewUser,
       {
-        role: user.role,
-        verifyLink: `https://diplomasystemapp.herokuapp.com/sign-up/?token=${token}`,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: this.getRoleUkr(user.role, user.isHead),
+        verifyLink: `${this.configService.get('APP_URL')}/sign-up/?token=${token}`,
       },
     );
 
@@ -145,8 +162,7 @@ export class UsersService {
       {
         firstName: user.firstName,
         lastName: user.lastName,
-        role: user.role,
-        resetLink: `https://diplomasystemapp.herokuapp.com/recover-password/?token=${token}`,
+        resetLink: `${this.configService.get('APP_URL')}/recover-password/?token=${token}`,
       },
     );
 
