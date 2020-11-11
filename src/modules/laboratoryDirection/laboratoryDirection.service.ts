@@ -6,7 +6,7 @@ import { LaboratoryDirection } from './laboratoryDirection.entity';
 import { Laboratory } from '../laboratory/laboratory.entity';
 import { LaboratoryDirectionInterface, LaboratoryDirectionServiceInterface } from './interfaces';
 import { LaboratoryDirectionDto } from './dto/laboratoryDirection.dto';
-import { User } from 'modules/users/user.entity';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class LaboratoryDirectionService implements LaboratoryDirectionServiceInterface {
