@@ -121,7 +121,7 @@ export class UsersService {
       MessageType.NewUser,
       {
         role: user.role,
-        verifyLink: `https://diploma-system-app.herokuapp.com/sign-up/?token=${token}`,
+        verifyLink: `https://diplomasystemapp.herokuapp.com/sign-up/?token=${token}`,
       },
     );
 
@@ -146,7 +146,7 @@ export class UsersService {
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
-        resetLink: `https://diploma-system-app.herokuapp.com/recover-password/?token=${token}`,
+        resetLink: `https://diplomasystemapp.herokuapp.com/recover-password/?token=${token}`,
       },
     );
 

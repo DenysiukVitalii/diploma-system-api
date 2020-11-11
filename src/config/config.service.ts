@@ -45,7 +45,7 @@ export class ConfigService {
         token_uri: 'https://oauth2.googleapis.com/token',
         auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
         client_secret: this.get('GD_CLIENT_SECRET'),
-        redirect_uris: ['https://diploma-system-api.herokuapp.com/docs'],
+        redirect_uris: ['https://diplomasystemapi.herokuapp.com/docs'],
       },
     };
   }
