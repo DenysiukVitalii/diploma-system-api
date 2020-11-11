@@ -15,8 +15,8 @@ export class SpecialtyController {
   ) {}
 
   @Get()
-  public getAll() {
-    return this.specialtyService.findAll();
+  public getAll(@CurrentUser() user: User) {
+    return this.specialtyService.findAll(user);
   }
 
   @Get()

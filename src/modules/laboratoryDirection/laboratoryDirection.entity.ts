@@ -1,3 +1,4 @@
+import { Department } from 'modules/department/department.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Laboratory } from '../laboratory/laboratory.entity';
 import { Theme } from '../theme/theme.entity';
@@ -13,7 +14,13 @@ export class LaboratoryDirection {
   name: string;
 
   @Column({ nullable: true })
+  departmentId: number;
+
+  @Column({ nullable: true })
   laboratoryId: number;
+
+  @ManyToOne(type => Department, department => department.laboratoryDirections)
+  department: Department;
 
   @ManyToOne(type => Laboratory, laboratory => laboratory.laboratoryDirections)
   laboratory: Laboratory;

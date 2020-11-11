@@ -28,8 +28,14 @@ export class TeacherLoadService implements TeacherLoadServiceInterface {
     private readonly departmentRepository: Repository<Department>,
   ) {}
 
-  findAll(): Promise<TeacherLoadInterface[]> {
+  findAll(user: User): Promise<TeacherLoadInterface[]> {
+    const { departmentId } = user;
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.teacherLoadRepository.find({
+      where: { departmentId },
       order: { id: 'DESC' },
       relations: ['academicDegree', 'academicYear', 'user'],
     });

@@ -13,8 +13,14 @@ export class SpecialtyService {
     private readonly specialtyRepository: Repository<Specialty>,
   ) {}
 
-  async findAll(): Promise<Specialty[]> {
+  async findAll(user: User): Promise<Specialty[]> {
+    const { departmentId } = user;
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.specialtyRepository.find({
+      where: { departmentId },
       order: { id: 'DESC' },
     });
   }

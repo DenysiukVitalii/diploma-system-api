@@ -14,8 +14,8 @@ export class LaboratoryController {
   constructor(private readonly laboratoryService: LaboratoryService) {}
 
   @Get()
-  public getAll(): Promise<Laboratory[]> {
-    return this.laboratoryService.findAll();
+  public getAll(@CurrentUser() user: User): Promise<Laboratory[]> {
+    return this.laboratoryService.findAll(user);
   }
 
   @Post()

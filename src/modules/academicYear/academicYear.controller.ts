@@ -14,8 +14,8 @@ export class AcademicYearController {
   constructor(private readonly academicYearService: AcademicYearService) {}
 
   @Get()
-  public getAll(): Promise<AcademicYear[]> {
-    return this.academicYearService.findAll();
+  public getAll(@CurrentUser() user: User): Promise<AcademicYear[]> {
+    return this.academicYearService.findAll(user);
   }
 
   @Post()

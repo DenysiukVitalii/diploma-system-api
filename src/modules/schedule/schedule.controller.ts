@@ -15,8 +15,8 @@ export class ScheduleController {
 
   @Auth(Roles.PERSONAL, Roles.STUDENT, Roles.TEACHER)
   @Get()
-  public getAll() {
-    return this.scheduleService.findAll();
+  public getAll(@CurrentUser() user: User) {
+    return this.scheduleService.findAll(user);
   }
 
   @Auth(Roles.PERSONAL)

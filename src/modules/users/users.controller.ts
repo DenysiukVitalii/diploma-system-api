@@ -25,11 +25,11 @@ export class UsersController {
 
   @Auth(Roles.TEACHER)
   @Get('personals')
-  getAllPersonals(@CurrentUser('isHead') isHead: boolean) {
-    if (!isHead) {
+  getAllPersonals(@CurrentUser() user: User) {
+    if (!user.isHead) {
       throw new NotFoundException('User not is head');
     }
-    return this.usersService.findAllUsersPersonals();
+    return this.usersService.findAllUsersPersonals(user);
   }
 
   @Auth(Roles.TEACHER)
@@ -72,8 +72,8 @@ export class UsersController {
 
   @Auth(Roles.PERSONAL, Roles.TEACHER, Roles.STUDENT)
   @Get('teachers')
-  getAllTeachers() {
-    return this.usersService.findAllUsersTeachers();
+  getAllTeachers(@CurrentUser() user: User) {
+    return this.usersService.findAllUsersTeachers(user);
   }
 
   @Auth(Roles.PERSONAL)
@@ -99,8 +99,8 @@ export class UsersController {
 
   @Auth(Roles.PERSONAL, Roles.TEACHER, Roles.STUDENT)
   @Get('students')
-  getAllStudents() {
-    return this.usersService.findAllUsersStudents();
+  getAllStudents(@CurrentUser() user: User) {
+    return this.usersService.findAllUsersStudents(user);
   }
 
   @Auth(Roles.PERSONAL)
