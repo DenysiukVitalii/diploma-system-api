@@ -19,8 +19,15 @@ export class ScheduleService {
     private readonly academicYearRepository: Repository<AcademicYear>,
   ) {}
 
-  async findAll(): Promise<Schedule[]> {
+  async findAll(user: User): Promise<Schedule[]> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.scheduleRepository.find({
+      where: { departmentId },
       relations: ['academicDegree', 'academicYear'],
     });
   }

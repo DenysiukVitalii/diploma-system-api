@@ -15,8 +15,8 @@ export class ThemeController {
   ) {}
 
   @Get()
-  public getAll() {
-    return this.themeService.findAll();
+  public getAll(@CurrentUser() user: User) {
+    return this.themeService.findAll(user);
   }
 
   @Auth(Roles.TEACHER)

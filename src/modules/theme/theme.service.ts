@@ -41,8 +41,15 @@ export class ThemeService {
     private readonly mailerService: ApplicationMailerService,
   ) {}
 
-  async findAll(): Promise<Theme[]> {
+  async findAll(user: User): Promise<Theme[]> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.themeRepository.find({
+      where: { departmentId },
       order: { id: 'DESC' },
       relations: ['laboratoryDirection', 'teacher', 'student', 'academicDegree', 'academicYear'],
     });

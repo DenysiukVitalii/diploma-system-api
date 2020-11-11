@@ -15,8 +15,8 @@ export class GroupController {
   ) {}
 
   @Get()
-  public getAll() {
-    return this.groupService.findAll();
+  public getAll(@CurrentUser() user: User) {
+    return this.groupService.findAll(user);
   }
 
   @Get()

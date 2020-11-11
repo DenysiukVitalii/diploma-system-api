@@ -14,8 +14,14 @@ export class AcademicYearService implements AcademicYearServiceInterface {
     private readonly academicYearRepository: Repository<AcademicYear>,
   ) {}
 
-  findAll(): Promise<AcademicYear[]> {
+  findAll(user: User): Promise<AcademicYear[]> {
+    const { departmentId } = user;
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.academicYearRepository.find({
+      where: { departmentId },
       order: {
         id: 'DESC',
       },

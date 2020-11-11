@@ -79,33 +79,57 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async findAllUsersHeads(): Promise<User[]> {
+  async findAllUsersHeads(user: User): Promise<User[]> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.usersRepository.find({
-      where: { role: Roles.TEACHER, isHead: true },
+      where: { role: Roles.TEACHER, isHead: true, departmentId },
       order: { id: 'DESC' },
       relations: ['department'],
     });
   }
 
-  async findAllUsersPersonals(): Promise<User[]> {
+  async findAllUsersPersonals(user: User): Promise<User[]> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.usersRepository.find({
-      where: { role: Roles.PERSONAL },
+      where: { role: Roles.PERSONAL, departmentId },
       order: { id: 'DESC' },
       relations: ['department'],
     });
   }
 
-  async findAllUsersStudents(): Promise<User[]> {
+  async findAllUsersStudents(user: User): Promise<User[]> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.usersRepository.find({
-      where: { role: Roles.STUDENT },
+      where: { role: Roles.STUDENT, departmentId },
       order: { id: 'DESC' },
       relations: ['group'],
     });
   }
 
-  async findAllUsersTeachers(): Promise<User[]> {
+  async findAllUsersTeachers(user: User): Promise<User[]> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.usersRepository.find({
-      where: { role: Roles.TEACHER },
+      where: { role: Roles.TEACHER, departmentId },
       order: { id: 'DESC' },
       relations: ['degree'],
     });

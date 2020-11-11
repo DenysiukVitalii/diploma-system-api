@@ -13,8 +13,14 @@ export class GroupService {
     private readonly groupRepository: Repository<Group>,
   ) {}
 
-  async findAll(): Promise<Group[]> {
+  async findAll(user: User): Promise<Group[]> {
+    const { departmentId } = user;
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.groupRepository.find({
+      where: { departmentId },
       order: { id: 'DESC' },
       relations: ['academicDegree', 'academicYear', 'specialty'],
     });

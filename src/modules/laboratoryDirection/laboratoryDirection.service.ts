@@ -6,6 +6,7 @@ import { LaboratoryDirection } from './laboratoryDirection.entity';
 import { Laboratory } from '../laboratory/laboratory.entity';
 import { LaboratoryDirectionInterface, LaboratoryDirectionServiceInterface } from './interfaces';
 import { LaboratoryDirectionDto } from './dto/laboratoryDirection.dto';
+import { User } from 'modules/users/user.entity';
 
 @Injectable()
 export class LaboratoryDirectionService implements LaboratoryDirectionServiceInterface {
@@ -16,13 +17,17 @@ export class LaboratoryDirectionService implements LaboratoryDirectionServiceInt
     private readonly laboratoryRepository: Repository<Laboratory>,
   ) {}
 
-  findAll(): Promise<LaboratoryDirection[]> {
-    return this.laboratoryDirectionRepository.find({
+  async findAll(user: User): Promise<LaboratoryDirection[]> {
+    const { departmentId } = user;
+
+    const allDirections = await this.laboratoryDirectionRepository.find({
+      relations: ['laboratory'],
       order: {
         id: 'DESC',
       },
-      relations: ['laboratory'],
     });
+
+    return allDirections.filter(i => i.laboratory && i.laboratory.departmentId === departmentId);
   }
 
   async create(data: LaboratoryDirectionInterface): Promise<LaboratoryDirection> {

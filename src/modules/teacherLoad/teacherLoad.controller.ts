@@ -16,8 +16,8 @@ export class TeacherLoadController {
   constructor(private readonly teacherLoadService: TeacherLoadService) {}
 
   @Get()
-  public getAll(): Promise<TeacherLoadInterface[]> {
-    return this.teacherLoadService.findAll();
+  public getAll(@CurrentUser() user: User): Promise<TeacherLoadInterface[]> {
+    return this.teacherLoadService.findAll(user);
   }
 
   @Auth(Roles.TEACHER)

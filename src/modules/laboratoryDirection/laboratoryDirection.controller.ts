@@ -5,6 +5,8 @@ import { LaboratoryDirection } from './laboratoryDirection.entity';
 import { LaboratoryDirectionDto } from './dto/laboratoryDirection.dto';
 import { Roles } from '../users/enums/roles.enum';
 import { Auth } from '../users/decorators/auth.decorator';
+import { CurrentUser } from 'modules/users/decorators/current-user.decorator';
+import { User } from 'modules/users/user.entity';
 
 @Auth(Roles.PERSONAL)
 @Controller('laboratory-direction')
@@ -12,8 +14,8 @@ export class LaboratoryDirectionController {
   constructor(private readonly laboratoryDirectionService: LaboratoryDirectionService) {}
 
   @Get()
-  public getAll(): Promise<LaboratoryDirection[]> {
-    return this.laboratoryDirectionService.findAll();
+  public getAll(@CurrentUser() user: User): Promise<LaboratoryDirection[]> {
+    return this.laboratoryDirectionService.findAll(user);
   }
 
   @Post()

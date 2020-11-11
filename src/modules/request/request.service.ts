@@ -37,9 +37,6 @@ export class RequestService {
       where: { studentId: user.id, themeId },
     });
 
-    console.log('request', request);
-
-    // const ids = request.map(el => el.id);
     await this.requestRepository.delete(request.id);
   }
 

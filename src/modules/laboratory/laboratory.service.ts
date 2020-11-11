@@ -14,8 +14,14 @@ export class LaboratoryService implements LaboratoryServiceInterface {
     private readonly laboratoryRepository: Repository<Laboratory>,
   ) {}
 
-  findAll(): Promise<Laboratory[]> {
+  findAll(user: User): Promise<Laboratory[]> {
+    const { departmentId } = user;
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.laboratoryRepository.find({
+      where: { departmentId },
       order: {
         id: 'DESC',
       },

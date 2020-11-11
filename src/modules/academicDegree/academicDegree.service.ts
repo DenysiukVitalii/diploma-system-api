@@ -14,8 +14,15 @@ export class AcademicDegreeService implements AcademicDegreeServiceInterface {
     private readonly academicDegreeRepository: Repository<AcademicDegree>,
   ) {}
 
-  findAll(): Promise<AcademicDegree[]> {
+  findAll(user: User): Promise<AcademicDegree[]> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     return this.academicDegreeRepository.find({
+      where: { departmentId },
       order: {
         id: 'DESC',
       },

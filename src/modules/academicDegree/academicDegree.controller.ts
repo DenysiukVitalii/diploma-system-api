@@ -14,8 +14,8 @@ export class AcademicDegreeController {
   constructor(private readonly academicDegreeService: AcademicDegreeService) {}
 
   @Get()
-  public getAll(): Promise<AcademicDegree[]> {
-    return this.academicDegreeService.findAll();
+  public getAll(@CurrentUser() user: User): Promise<AcademicDegree[]> {
+    return this.academicDegreeService.findAll(user);
   }
 
   @Post()
