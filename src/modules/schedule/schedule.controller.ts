@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Get, Post, Put, Delete, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Get, Post, Put, Delete, UseGuards, Res } from '@nestjs/common';
 
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { ScheduleService } from './schedule.service';
@@ -14,9 +14,27 @@ export class ScheduleController {
   ) {}
 
   @Auth(Roles.PERSONAL, Roles.STUDENT, Roles.TEACHER)
-  @Get()
-  public getAll(@CurrentUser() user: User) {
-    return this.scheduleService.findAll(user);
+  @Get('/:academicYearId/:academicDegreeId')
+  public getAll(@CurrentUser() user: User, @Param() params) {
+    return this.scheduleService.findAll(user, params);
+  }
+
+  @Auth(Roles.PERSONAL)
+  @Get('download/:academicYearId/:academicDegreeId')
+  async downloadFileWithSchedule(
+    @Param() params,
+    @CurrentUser() user: User,
+    @Res() res,
+  ): Promise<void> {
+    const base64 = await this.scheduleService.downloadFileWithSchedule(user, params);
+
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.wordprocessing',
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=FileName.docx');
+
+    return res.send(Buffer.from(base64, 'base64'));
   }
 
   @Auth(Roles.PERSONAL)

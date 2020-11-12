@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -7,6 +7,8 @@ import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { User } from '../users/user.entity';
 import { AcademicDegree } from '../academicDegree/academicDegree.entity';
 import { AcademicYear } from '../academicYear/academicYear.entity';
+import { downloadFile } from './utils/generateFile';
+import { ScheduleParams } from './interfaces/scheduleParams.interface';
 
 @Injectable()
 export class ScheduleService {
@@ -19,15 +21,31 @@ export class ScheduleService {
     private readonly academicYearRepository: Repository<AcademicYear>,
   ) {}
 
-  async findAll(user: User): Promise<Schedule[]> {
+  async findAll(user: User, params: ScheduleParams): Promise<Schedule[]> {
     const { departmentId } = user;
 
     if (!departmentId) {
       throw new NotFoundException('Department not found');
     }
 
+    const academicYear = await this.academicYearRepository.findOne(params.academicYearId);
+
+    if (!academicYear) {
+      throw new NotFoundException('Academic year not found');
+    }
+
+    const academicDegree = await this.academicDegreeRepository.findOne(params.academicDegreeId);
+
+    if (!academicDegree) {
+      throw new NotFoundException('Academic degree not found');
+    }
+
     return this.scheduleRepository.find({
-      where: { departmentId },
+      where: {
+        departmentId,
+        academicYearId: academicYear.id,
+        academicDegreeId: academicDegree.id,
+      },
       relations: ['academicDegree', 'academicYear'],
     });
   }
@@ -109,5 +127,41 @@ export class ScheduleService {
     }
 
     return this.scheduleRepository.remove(schedule);
+  }
+
+  async downloadFileWithSchedule(
+    user: User,
+    params: ScheduleParams,
+  ): Promise<string> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
+    const academicYear = await this.academicYearRepository.findOne(params.academicYearId);
+
+    if (!academicYear) {
+      throw new NotFoundException('Academic year not found');
+    }
+
+    const academicDegree = await this.academicDegreeRepository.findOne(params.academicDegreeId);
+
+    if (!academicDegree) {
+      throw new NotFoundException('Academic degree not found');
+    }
+
+    const schedule = await this.findAll(user, params);
+
+    const data = schedule.map((item, idx) => ({
+      id: item.id,
+      number: `${idx + 1}.`,
+      name: item.name,
+      dates: `${item.startDate} - ${item.endDate}`,
+      description: item.description,
+      notes: '',
+    }));
+
+    return downloadFile(data, academicYear.name, academicDegree.name);
   }
 }
