@@ -33,11 +33,17 @@ export class RequestService {
   }
 
   async findAllAndDelete(user: User, themeId) {
-    const request = await this.requestRepository.findOne({
-      where: { studentId: user.id, themeId },
+    const requests = await this.requestRepository.find({
+      where: { studentId: user.id },
     });
 
-    await this.requestRepository.delete(request.id);
+    await this.requestRepository.delete(requests.map(i => i.id));
+
+    const requestsTheme = await this.requestRepository.find({
+      where: { themeId },
+    });
+
+    await this.requestRepository.delete(requestsTheme.map(i => i.id));
   }
 
   async findById(id: number): Promise<Request> {
