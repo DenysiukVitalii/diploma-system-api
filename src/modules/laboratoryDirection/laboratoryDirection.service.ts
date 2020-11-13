@@ -33,7 +33,13 @@ export class LaboratoryDirectionService implements LaboratoryDirectionServiceInt
     });
   }
 
-  async create(data: LaboratoryDirectionInterface): Promise<LaboratoryDirection> {
+  async create(data: LaboratoryDirectionInterface, user: User): Promise<LaboratoryDirection> {
+    const { departmentId } = user;
+
+    if (!departmentId) {
+      throw new NotFoundException('Department not found');
+    }
+
     const laboratory = await this.laboratoryRepository.findOne(data.laboratoryId);
 
     if (!laboratory) {
@@ -43,6 +49,7 @@ export class LaboratoryDirectionService implements LaboratoryDirectionServiceInt
     const laboratoryDirection = await this.laboratoryDirectionRepository.create({
       ...data,
       laboratory,
+      department: { id: departmentId },
     });
 
     return this.laboratoryDirectionRepository.save(laboratoryDirection);

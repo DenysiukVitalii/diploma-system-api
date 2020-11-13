@@ -19,8 +19,8 @@ export class LaboratoryDirectionController {
   }
 
   @Post()
-  public create(@Body() laboratoryDirectionDto: LaboratoryDirectionDto) {
-    return this.laboratoryDirectionService.create(laboratoryDirectionDto);
+  public create(@Body() laboratoryDirectionDto: LaboratoryDirectionDto, @CurrentUser() user: User) {
+    return this.laboratoryDirectionService.create(laboratoryDirectionDto, user);
   }
 
   @Put(':id')
