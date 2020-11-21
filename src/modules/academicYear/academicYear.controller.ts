@@ -8,21 +8,23 @@ import { User } from '../users/user.entity';
 import { Auth } from '../users/decorators/auth.decorator';
 import { Roles } from '../users/enums/roles.enum';
 
-@Auth(Roles.PERSONAL)
 @Controller('academic-year')
 export class AcademicYearController {
   constructor(private readonly academicYearService: AcademicYearService) {}
 
+  @Auth(Roles.PERSONAL)
   @Get()
   public getAll(@CurrentUser() user: User): Promise<AcademicYear[]> {
     return this.academicYearService.findAll(user);
   }
 
+  @Auth(Roles.PERSONAL)
   @Post()
   public create(@Body() academicYearDto: AcademicYearDto, @CurrentUser() user: User) {
     return this.academicYearService.create(academicYearDto, user);
   }
 
+  @Auth(Roles.PERSONAL)
   @Put(':id')
   public update(
     @Param('id') id: number,
@@ -31,6 +33,7 @@ export class AcademicYearController {
     return this.academicYearService.update(id, academicYearDto);
   }
 
+  @Auth(Roles.PERSONAL)
   @Delete(':id')
   public delete(@Param('id') id: number) {
     return this.academicYearService.delete(id);

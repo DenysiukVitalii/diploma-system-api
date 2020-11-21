@@ -10,7 +10,6 @@ import { Auth } from '../users/decorators/auth.decorator';
 import { TeacherLoadInterface } from './interfaces';
 import { DegreesDto } from './dto/degrees.dto';
 
-@Auth(Roles.PERSONAL)
 @Controller('teacher-load')
 export class TeacherLoadController {
   constructor(private readonly teacherLoadService: TeacherLoadService) {}
@@ -26,6 +25,7 @@ export class TeacherLoadController {
     return this.teacherLoadService.findByUserId(user.id);
   }
 
+  @Auth(Roles.PERSONAL)
   @Post('download/:academicYear')
   async downloadFileWithLoads(
     @Body() degreesDto: DegreesDto,
@@ -44,21 +44,25 @@ export class TeacherLoadController {
     return res.send(Buffer.from(base64, 'base64'));
   }
 
+  @Auth(Roles.PERSONAL)
   @Get(':id')
   public getById(@Param('id') id: number): Promise<TeacherLoadInterface[]> {
     return this.teacherLoadService.findByUserId(id);
   }
 
+  @Auth(Roles.PERSONAL)
   @Post()
   public create(@Body() teacherLoadDto: TeacherLoadDto, @CurrentUser() user: User): Promise<TeacherLoad> {
     return this.teacherLoadService.create(teacherLoadDto, user);
   }
 
+  @Auth(Roles.PERSONAL)
   @Put(':id')
   public update(@Param('id') id: number, @Body() teacherLoadDto: TeacherLoadDto) {
     return this.teacherLoadService.update(id, teacherLoadDto);
   }
 
+  @Auth(Roles.PERSONAL)
   @Delete(':id')
   public delete(@Param('id') id: number) {
     return this.teacherLoadService.delete(id);

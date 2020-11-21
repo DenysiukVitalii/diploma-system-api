@@ -80,11 +80,13 @@ export class ThemeController {
     return this.themeService.create(creatThemeDto, user);
   }
 
+  @Auth(Roles.TEACHER)
   @Put(':id')
   public update(@Param('id') id: number, @Body() themeDto: CreateThemeDto) {
     return this.themeService.update(id, themeDto);
   }
 
+  @Auth(Roles.TEACHER, Roles.PERSONAL)
   @Delete(':id')
   public delete(@Param('id') id: number) {
     return this.themeService.delete(id);

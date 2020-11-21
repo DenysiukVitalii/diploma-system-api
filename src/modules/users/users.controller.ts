@@ -140,6 +140,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @Auth(Roles.PERSONAL)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.usersService.remove(id);

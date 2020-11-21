@@ -8,21 +8,23 @@ import { Auth } from '../users/decorators/auth.decorator';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
 
-@Auth(Roles.PERSONAL)
 @Controller('laboratory-direction')
 export class LaboratoryDirectionController {
   constructor(private readonly laboratoryDirectionService: LaboratoryDirectionService) {}
 
+  @Auth(Roles.PERSONAL)
   @Get()
   public getAll(@CurrentUser() user: User): Promise<LaboratoryDirection[]> {
     return this.laboratoryDirectionService.findAll(user);
   }
 
+  @Auth(Roles.PERSONAL)
   @Post()
   public create(@Body() laboratoryDirectionDto: LaboratoryDirectionDto, @CurrentUser() user: User) {
     return this.laboratoryDirectionService.create(laboratoryDirectionDto, user);
   }
 
+  @Auth(Roles.PERSONAL)
   @Put(':id')
   public update(
     @Param('id') id: number,
@@ -31,6 +33,7 @@ export class LaboratoryDirectionController {
     return this.laboratoryDirectionService.update(id, laboratoryDirectionDto);
   }
 
+  @Auth(Roles.PERSONAL)
   @Delete(':id')
   public delete(@Param('id') id: number) {
     return this.laboratoryDirectionService.delete(id);
